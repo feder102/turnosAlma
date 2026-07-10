@@ -63,7 +63,19 @@ export default async function PacientePage({
 
   return (
     <div className="max-w-4xl">
-      <PageTitle title={`${patient.firstName} ${patient.lastName}`} />
+      <PageTitle
+        title={`${patient.firstName} ${patient.lastName}`}
+        action={
+          session.role === "ADMIN" || session.role === "RECEPTION" ? (
+            <Link
+              href={`/dashboard/pacientes/${patient.id}/editar`}
+              className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100"
+            >
+              Editar
+            </Link>
+          ) : undefined
+        }
+      />
 
       <div className="grid gap-5 lg:grid-cols-3">
         {/* Datos personales */}

@@ -77,6 +77,7 @@ model Patient {
   insuranceProvider String? // obra social / prepaga; null = particular
   insuranceNumber   String? // número de afiliado
   medicalNotes      String? // alergias, medicación, observaciones relevantes
+  active            Boolean         @default(true) // baja lógica
   createdAt         DateTime        @default(now())
   appointments      Appointment[]
   plans             TreatmentPlan[]

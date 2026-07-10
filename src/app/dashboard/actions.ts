@@ -362,3 +362,54 @@ export async function saveTemplate(formData: FormData): Promise<void> {
   });
   revalidatePath("/dashboard/mensajes");
 }
+
+// ── Pacientes (admin y recepción) ───────────────────────────────────────────
+
+export async function upsertPatient(formData: FormData): Promise<ActionResult> {
+  await requireUser(["ADMIN", "RECEPTION"]);
+
+  const id = String(formData.get("id") || "");
+  const firstName = String(formData.get("firstName") || "").trim();
+  const lastName = String(formData.get("lastName") || "").trim();
+  const phone = String(formData.get("phone") || "").trim();
+
+  if (!firstName || !lastName) return { ok: false, error: "Nombre y apellido son obligatorios" };
+  if (phone.length < 8) return { ok: false, error: "Ingresá un teléfono válido" };
+
+  const birthDateStr = String(formData.get("birthDate") || "").trim();
+  if (birthDateStr && !/^\d{4}-\d{2}-\d{2}$/.test(birthDateStr)) {
+    return { ok: false, error: "Fecha de nacimiento inválida" };
+  }
+
+  const data = {
+    firstName,
+    lastName,
+    phone,
+    email: String(formData.get("email") || "").trim() || null,
+    birthDate: birthDateStr ? new Date(`${birthDateStr}T00:00:00`) : null,
+    insuranceProvider: String(formData.get("insuranceProvider") || "").trim() || null,
+    insuranceNumber: String(formData.get("insuranceNumber") || "").trim() || null,
+    medicalNotes: String(formData.get("medicalNotes") || "").trim() || null,
+  };
+
+  try {
+    if (id) {
+      await prisma.patient.update({ where: { id }, data });
+      revalidatePath(`/dashboard/pacientes/${id}`);
+    } else {
+      await prisma.patient.create({ data });
+    }
+  } catch (err) {
+    console.error(err);
+    return { ok: false, error: "No se pudo guardar el paciente" };
+  }
+
+  revalidatePath("/dashboard/pacientes");
+  return { ok: true };
+}
+
+export async function togglePatient(id: string, active: boolean): Promise<void> {
+  await requireUser(["ADMIN", "RECEPTION"]);
+  await prisma.patient.update({ where: { id }, data: { active } });
+  revalidatePath("/dashboard/pacientes");
+}
