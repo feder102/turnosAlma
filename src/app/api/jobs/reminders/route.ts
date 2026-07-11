@@ -4,6 +4,8 @@ import { sendWhatsApp, alreadySent } from "@/lib/messaging";
 import { formatDate, formatTime } from "@/lib/format";
 import { appBaseUrl } from "@/lib/stripe";
 
+// TODO: Recordatorios de citas por WhatsApp. Deshabilitado porque Vercel Hobby no permite
+// crons que se ejecuten más de una vez por día. Habilitar nuevamente con Vercel Pro.
 // Job de recordatorios. Ejecutarlo cada 15-30 min:
 //  - En producción: Vercel Cron (ver vercel.json) con CRON_SECRET.
 //  - En desarrollo: GET http://localhost:3000/api/jobs/reminders
