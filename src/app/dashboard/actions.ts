@@ -5,7 +5,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { requireUser, destroySession, canManageBookings } from "@/lib/auth";
+import { requireUser, destroySession, canManageBookings, hashPassword } from "@/lib/auth";
 import { BookingError, createAppointment, findOrCreatePatient } from "@/lib/booking";
 import { findConflict, findDayOffConflict } from "@/lib/availability";
 import { refundPayment, PaymentError, totalPaidForAppointment } from "@/lib/payments";
@@ -524,6 +524,56 @@ export async function toggleDentist(id: string, active: boolean): Promise<Action
   }
   await prisma.dentist.update({ where: { id }, data: { active } });
   revalidatePath("/dashboard", "layout");
+  return { ok: true };
+}
+
+// Gestión de la contraseña de acceso de un odontólogo. Solo el admin.
+// Si el odontólogo todavía no tiene cuenta de acceso, la crea usando el email
+// indicado (por defecto, su email de contacto).
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const MIN_PASSWORD = 8;
+
+export async function setDentistPassword(formData: FormData): Promise<ActionResult> {
+  await requireUser(["ADMIN"]);
+
+  const dentistId = String(formData.get("dentistId") || "").trim();
+  const password = String(formData.get("password") || "");
+  const email = String(formData.get("email") || "").trim().toLowerCase();
+
+  if (password.length < MIN_PASSWORD) {
+    return { ok: false, error: `La contraseña debe tener al menos ${MIN_PASSWORD} caracteres` };
+  }
+
+  const dentist = await prisma.dentist.findUnique({
+    where: { id: dentistId },
+    include: { user: true },
+  });
+  if (!dentist) return { ok: false, error: "Odontólogo no encontrado" };
+
+  const passwordHash = await hashPassword(password);
+
+  if (dentist.user) {
+    await prisma.user.update({ where: { id: dentist.user.id }, data: { passwordHash } });
+    return { ok: true };
+  }
+
+  // Sin cuenta de acceso todavía: la creamos con el email indicado.
+  if (!EMAIL_RE.test(email)) {
+    return { ok: false, error: "Ingresá un email válido para el acceso" };
+  }
+  const taken = await prisma.user.findUnique({ where: { email } });
+  if (taken) return { ok: false, error: "Ya existe un usuario con ese email" };
+
+  await prisma.user.create({
+    data: {
+      email,
+      name: dentist.name,
+      passwordHash,
+      role: "DENTIST",
+      dentistId: dentist.id,
+    },
+  });
+  revalidatePath(`/dashboard/dentistas/${dentistId}/editar`);
   return { ok: true };
 }
 

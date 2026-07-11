@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
 import { PageTitle } from "../../../ui";
 import { DentistForm } from "../../DentistForm";
+import { DentistAccessForm } from "../../DentistAccessForm";
 
 export const metadata = { title: "Editar odontólogo — Consultorio" };
 export const dynamic = "force-dynamic";
@@ -16,7 +17,13 @@ export default async function EditarDentistaPage({
   const { id } = await params;
 
   const [dentist, chairs] = await Promise.all([
-    prisma.dentist.findUnique({ where: { id }, include: { chairs: { select: { id: true } } } }),
+    prisma.dentist.findUnique({
+      where: { id },
+      include: {
+        chairs: { select: { id: true } },
+        user: { select: { email: true } },
+      },
+    }),
     prisma.chair.findMany({
       where: { active: true },
       orderBy: { name: "asc" },
@@ -26,7 +33,7 @@ export default async function EditarDentistaPage({
   if (!dentist) notFound();
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       <PageTitle title={`Editar — ${dentist.name}`} />
       <DentistForm
         chairs={chairs}
@@ -45,6 +52,12 @@ export default async function EditarDentistaPage({
           defaultChairId: dentist.defaultChairId,
           chairIds: dentist.chairs.map((c) => c.id),
         }}
+      />
+      <DentistAccessForm
+        dentistId={dentist.id}
+        hasAccount={dentist.user !== null}
+        loginEmail={dentist.user?.email ?? null}
+        contactEmail={dentist.email}
       />
     </div>
   );
