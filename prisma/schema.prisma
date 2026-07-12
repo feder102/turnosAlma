@@ -1,7 +1,6 @@
 // Sistema de turnos para consultorio odontológico
-// SQLite en desarrollo (sin enums nativos: los estados son String validados
-// con Zod en src/lib/domain.ts). Para producción cambiar provider a
-// "postgresql" — ver README, sección "Pasar a PostgreSQL".
+// PostgreSQL (Neon). Sin enums nativos: los estados son String validados
+// con Zod en src/lib/domain.ts (se mantiene así por simplicidad).
 
 generator client {
   provider = "prisma-client"
@@ -9,7 +8,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 // ── Consultorio ────────────────────────────────────────────────────────────

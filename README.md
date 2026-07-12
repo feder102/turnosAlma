@@ -4,22 +4,21 @@ Sistema completo de turnos online para un consultorio con varios odontólogos y 
 reservas públicas, dashboard privado con roles, pagos con Stripe, notificaciones por
 WhatsApp y planes de tratamiento de varias sesiones (ortodoncia, endodoncia, etc.).
 
-**Stack:** Next.js (App Router) + TypeScript + Tailwind CSS + Prisma 7 + SQLite (dev) / PostgreSQL (prod).
+**Stack:** Next.js (App Router) + TypeScript + Tailwind CSS + Prisma 7 + PostgreSQL (Neon, dev y prod).
 
 ---
 
 ## Correr el proyecto localmente
 
-Requisitos: Node.js 20+.
+Requisitos: Node.js 20+ y una base PostgreSQL (recomendado: [Neon](https://neon.tech), tiene free tier).
 
 ```bash
 npm install
-npx prisma migrate dev   # crea la base SQLite (dev.db) y aplica migraciones
+# Configurar DATABASE_URL en .env con la connection string de Neon (ver .env.example)
+npx prisma migrate dev   # aplica migraciones contra la base
 npm run db:seed          # datos de ejemplo
 npm run dev              # http://localhost:3000
 ```
-
-No hace falta instalar ninguna base de datos: en desarrollo se usa SQLite.
 
 ### Usuarios de prueba (seed)
 
@@ -63,9 +62,9 @@ No hace falta instalar ninguna base de datos: en desarrollo se usa SQLite.
   nunca queda desincronizado. Cobro por sesión o total por adelantado (`billingMode`).
 - **`ClinicalNote`**: 1:1 con el turno (qué se hizo + próximos pasos), indexada por
   paciente → la ficha del paciente es la suma cronológica de sus notas.
-- **Estados como `String`**: SQLite no soporta enums de Prisma; los valores se validan
-  en `src/lib/domain.ts` (uniones de TypeScript + Zod en los endpoints). Al pasar a
-  PostgreSQL se pueden promover a enums nativos si se quiere.
+- **Estados como `String`**: se mantienen como string validado (uniones de TypeScript +
+  Zod en `src/lib/domain.ts` y los endpoints) en lugar de enums nativos de Prisma, por
+  simplicidad — se pueden promover a enums nativos si se quiere.
 - **Dinero en centavos (`Int`)** para evitar errores de punto flotante.
 - **Fechas en UTC** en la base; la zona horaria del consultorio (`Clinic.timezone`) se
   aplica solo al mostrar y al convertir "fecha + hora local" → UTC (`src/lib/format.ts`).
@@ -98,8 +97,10 @@ maneja 3DS/errores y es lo más simple de mantener. `src/lib/payments.ts`:
 editan desde Dashboard → Mensajes. Mensajes: confirmación, recordatorio 24 hs (con
 preparación según tratamiento), recordatorio 2-3 hs, cuidados post-tratamiento al
 completar el turno, recall a los 6 meses, avisos al staff y cancelación/reprogramación.
-Los recordatorios los dispara `/api/jobs/reminders` (Vercel Cron cada 20 min), con
-deduplicación vía `MessageLog`.
+Los recordatorios los dispara `/api/jobs/reminders`, con deduplicación vía `MessageLog`.
+**Nota:** el cron automático está deshabilitado (ver TODO en el archivo) porque Vercel
+Hobby no permite crons con frecuencia mayor a 1 vez/día; se puede llamar manualmente o
+reactivar el cron con un plan Pro.
 
 ### Roles
 
@@ -139,31 +140,17 @@ Opción recomendada para empezar: **Twilio API for WhatsApp**.
 
 ---
 
-## Pasar a PostgreSQL (producción)
-
-1. Crear una base administrada (Neon, Supabase, Vercel Postgres…).
-2. En `prisma/schema.prisma`: `provider = "postgresql"`.
-3. `npm install @prisma/adapter-pg` y en `src/lib/prisma.ts` reemplazar el adapter:
-   ```ts
-   import { PrismaPg } from "@prisma/adapter-pg";
-   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-   ```
-   (mismo cambio en `prisma/seed.ts`).
-4. Borrar `prisma/migrations` (fueron generadas para SQLite) y correr
-   `npx prisma migrate dev --name init` contra la nueva base.
-5. `npm run db:seed` (opcional) y listo.
-
 ## Deploy en Vercel
 
 1. Subir el repo a GitHub e importarlo en Vercel.
 2. Configurar las variables de entorno (ver `.env.example`):
-   - `DATABASE_URL` (PostgreSQL administrado)
+   - `DATABASE_URL` (connection string de Neon; usar la misma base que en dev o crear
+     otra para producción)
    - `AUTH_SECRET` (`openssl rand -base64 32`)
    - `NEXT_PUBLIC_APP_URL` (dominio final)
-   - `CRON_SECRET` (para `/api/jobs/reminders`; Vercel Cron lo envía solo)
+   - `CRON_SECRET` (para `/api/jobs/reminders`, si se llama manualmente o se reactiva el cron)
    - Stripe y Twilio según arriba
-3. `vercel.json` ya define el cron de recordatorios cada 20 min.
-4. Aplicar migraciones contra la base de producción:
+3. Aplicar migraciones contra la base de producción (si es distinta de la de dev):
    `DATABASE_URL=… npx prisma migrate deploy`.
 
 ### Backups
