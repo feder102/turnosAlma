@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDate, formatTime, formatMoney } from "@/lib/format";
 import { PlanScheduler, PayBox } from "./client";
-import { stripeEnabled } from "@/lib/stripe";
+import { mpEnabled } from "@/lib/mercadopago";
 
 export const metadata = { title: "Turno confirmado" };
 
@@ -78,7 +78,7 @@ export default async function ExitoPage({
               ? formatMoney(appt.treatment.depositCents)
               : null
           }
-          stripeLive={stripeEnabled()}
+          mpLive={mpEnabled()}
         />
       )}
 

@@ -1,7 +1,7 @@
 # 🦷 Turnero — Sistema de turnos para consultorio odontológico
 
 Sistema completo de turnos online para un consultorio con varios odontólogos y sillones:
-reservas públicas, dashboard privado con roles, pagos con Stripe, notificaciones por
+reservas públicas, dashboard privado con roles, pagos con Mercado Pago, notificaciones por
 WhatsApp y planes de tratamiento de varias sesiones (ortodoncia, endodoncia, etc.).
 
 **Stack:** Next.js (App Router) + TypeScript + Tailwind CSS + Prisma 7 + PostgreSQL (Neon, dev y prod).
@@ -77,16 +77,21 @@ libre (prefiere el sillón por defecto del profesional). Al confirmar, la creaci
 dentro de una transacción que re-chequea conflictos (`findConflict`) por odontólogo *y*
 por sillón — la doble validación evita la carrera entre ver el slot y reservarlo.
 
-### Pagos (Stripe Checkout)
+### Pagos (Mercado Pago — Checkout Bricks)
 
-Se eligió **Checkout Sessions** (no Payment Intents crudos): Stripe aloja el formulario,
-maneja 3DS/errores y es lo más simple de mantener. `src/lib/payments.ts`:
+Se eligió **Payment Brick** (Checkout Bricks): el formulario de pago vive embebido en
+nuestra página `/pagar/[id]`, MP maneja 3DS/antifraude y la tokenización de tarjetas
+(PCI simplificado). `src/lib/payments.ts`:
 
 - Pago completo o **seña** (si el tratamiento define `depositCents`), y **plan completo
   por adelantado** para planes multi-sesión.
-- El importe siempre sale del turno, que ya tiene aplicado el **copago de obra social**.
-- Webhook (`/api/payments/webhook`) actualiza pagado/fallido/reembolsado.
-- **Modo simulado sin claves**: sin `STRIPE_SECRET_KEY`, "pagar" aprueba el pago
+- El importe siempre sale del turno (nunca del navegador), que ya tiene aplicado el
+  **copago de obra social**.
+- Medios de pago: tarjetas de crédito/débito y **cuenta de Mercado Pago** (Wallet, vía
+  preferencia creada en el backend).
+- Webhook (`/api/payments/webhook`) valida la firma `x-signature`, consulta el pago a la
+  API de MP y actualiza pagado/fallido/reembolsado.
+- **Modo simulado sin claves**: sin `MP_ACCESS_TOKEN`, "pagar" aprueba el pago
   localmente para poder probar todo el flujo.
 - Reembolsos desde el detalle del turno en el dashboard.
 
@@ -113,16 +118,17 @@ Sesión: JWT firmado (jose) en cookie httpOnly; cada página y server action re-
 
 ---
 
-## Configurar Stripe (producción)
+## Configurar Mercado Pago (producción)
 
-1. Crear cuenta en [dashboard.stripe.com](https://dashboard.stripe.com) y copiar la
-   **Secret key** (`sk_live_…` o `sk_test_…`) → `STRIPE_SECRET_KEY`.
-2. En **Developers → Webhooks → Add endpoint**: URL `https://TU-DOMINIO/api/payments/webhook`,
-   eventos: `checkout.session.completed`, `checkout.session.expired`, `charge.refunded`.
-3. Copiar el **Signing secret** (`whsec_…`) → `STRIPE_WEBHOOK_SECRET`.
-4. `STRIPE_CURRENCY`: `ars` requiere cuenta Stripe que opere esa moneda; si no, usar la
-   moneda de tu cuenta.
-5. Para probar local: `stripe listen --forward-to localhost:3000/api/payments/webhook`.
+1. Crear una aplicación en el [panel de desarrolladores](https://www.mercadopago.com.ar/developers/panel/app)
+   y copiar las credenciales: **Access Token** → `MP_ACCESS_TOKEN` y **Public Key** →
+   `NEXT_PUBLIC_MP_PUBLIC_KEY` (usar las de **prueba** en dev y las **productivas** en prod).
+2. En **Webhooks → Configurar notificaciones**: URL `https://TU-DOMINIO/api/payments/webhook`,
+   evento **Pagos**.
+3. Copiar la **clave secreta** del webhook → `MP_WEBHOOK_SECRET`.
+4. `MP_CURRENCY`: `ARS` por defecto (debe coincidir con el país de la cuenta).
+5. Para probar local: exponer el puerto con un túnel (p. ej. `ngrok http 3000`) y apuntar
+   el webhook de prueba a esa URL; tarjetas de test en la doc de MP.
 
 ## Configurar WhatsApp (producción)
 
@@ -149,7 +155,7 @@ Opción recomendada para empezar: **Twilio API for WhatsApp**.
    - `AUTH_SECRET` (`openssl rand -base64 32`)
    - `NEXT_PUBLIC_APP_URL` (dominio final)
    - `CRON_SECRET` (para `/api/jobs/reminders`, si se llama manualmente o se reactiva el cron)
-   - Stripe y Twilio según arriba
+   - Mercado Pago y Twilio según arriba
 3. Aplicar migraciones contra la base de producción (si es distinta de la de dev):
    `DATABASE_URL=… npx prisma migrate deploy`.
 
@@ -175,7 +181,7 @@ los incluyen) y verificar restauración periódicamente.
 - [ ] Probar con RECEPTION que no accede a tratamientos ni reportes.
 
 **Pagos**
-- [ ] Webhook de Stripe verificado (evento de prueba desde el dashboard de Stripe).
+- [ ] Webhook de Mercado Pago verificado (notificación de prueba desde el panel de MP).
 - [ ] Flujo de reembolso probado con un pago de test.
 
 **Datos de salud (privacidad)**
