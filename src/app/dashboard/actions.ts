@@ -16,7 +16,7 @@ import { SPECIALTIES, DENTIST_TITLES, composeDentistName } from "@/lib/domain";
 
 export async function logout() {
   await destroySession();
-  redirect("/login");
+  redirect("/");
 }
 
 // ── Turnos ─────────────────────────────────────────────────────────────────
