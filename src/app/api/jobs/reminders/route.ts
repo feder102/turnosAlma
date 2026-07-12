@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendWhatsApp, alreadySent } from "@/lib/messaging";
 import { formatDate, formatTime } from "@/lib/format";
-import { appBaseUrl } from "@/lib/stripe";
+import { appBaseUrl } from "@/lib/mercadopago";
 
 // TODO: Recordatorios de citas por WhatsApp. Deshabilitado porque Vercel Hobby no permite
 // crons que se ejecuten más de una vez por día. Habilitar nuevamente con Vercel Pro.

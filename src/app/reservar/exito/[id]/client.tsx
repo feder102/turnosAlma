@@ -54,17 +54,17 @@ export function PlanScheduler({
   );
 }
 
-// Pago online (Stripe Checkout, o modo simulado si no hay claves configuradas).
+// Pago online (Mercado Pago, o modo simulado si no hay claves configuradas).
 export function PayBox({
   appointmentId,
   amountLabel,
   depositLabel,
-  stripeLive,
+  mpLive,
 }: {
   appointmentId: string;
   amountLabel: string;
   depositLabel: string | null;
-  stripeLive: boolean;
+  mpLive: boolean;
 }) {
   const router = useRouter();
   const [working, setWorking] = useState(false);
@@ -85,7 +85,7 @@ export function PayBox({
       return;
     }
     if (data.url) {
-      window.location.href = data.url; // Stripe Checkout
+      window.location.href = data.url; // página de pago con Mercado Pago
     } else {
       router.refresh(); // modo simulado: ya quedó pagado
     }
@@ -96,7 +96,7 @@ export function PayBox({
       <p className="font-semibold text-sky-900">Aboná tu turno online</p>
       <p className="mt-1 text-sm text-sky-700">
         Es opcional: también podés pagar en el consultorio.
-        {!stripeLive && " (Modo de prueba: el pago se simula.)"}
+        {!mpLive && " (Modo de prueba: el pago se simula.)"}
       </p>
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       <div className="mt-3 flex flex-wrap gap-2">

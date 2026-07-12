@@ -11,7 +11,7 @@ import { findConflict, findDayOffConflict } from "@/lib/availability";
 import { refundPayment, PaymentError, totalPaidForAppointment } from "@/lib/payments";
 import { sendWhatsApp, STAFF_PHONE } from "@/lib/messaging";
 import { formatDate, formatTime, zonedToUtc } from "@/lib/format";
-import { appBaseUrl } from "@/lib/stripe";
+import { appBaseUrl } from "@/lib/mercadopago";
 import { SPECIALTIES, DENTIST_TITLES, composeDentistName } from "@/lib/domain";
 
 export async function logout() {

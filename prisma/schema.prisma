@@ -232,9 +232,9 @@ model Payment {
   kind                  String // FULL | DEPOSIT | PLAN_TOTAL | BALANCE
   // PENDING | PAID | FAILED | REFUNDED
   status                String         @default("PENDING")
-  provider              String         @default("stripe") // stripe | manual
-  stripeSessionId       String?        @unique
-  stripePaymentIntentId String?
+  provider              String         @default("mercadopago") // mercadopago | manual | simulated
+  // ID del pago en Mercado Pago (id de la API de Payments)
+  mpPaymentId           String?        @unique
   refundedCents         Int            @default(0)
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
