@@ -112,7 +112,7 @@ export default async function PacientesPage({
       </form>
 
       {canManage && (
-        <div className="mb-4 flex gap-1 text-sm">
+        <div className="mb-4 flex flex-wrap gap-1 text-sm">
           {filters.map((f) => (
             <Link
               key={f.key}

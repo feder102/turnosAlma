@@ -46,7 +46,7 @@ export default async function SillonesPage() {
         última actualización: {formatTime(now, tz)} hs.
       </p>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {chairs.map((chair) => {
           const current = chair.appointments.find(
             (a) => a.startsAt <= now && a.endsAt > now

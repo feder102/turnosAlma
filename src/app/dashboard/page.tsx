@@ -102,7 +102,7 @@ export default async function DashboardHome() {
         <StatCard label="Ausentismo del mes" value={`${noShowRate}%`} />
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Turnos de hoy por odontólogo */}
         <section>
           <h2 className="mb-3 text-lg font-semibold">Hoy, por odontólogo</h2>

@@ -64,6 +64,11 @@ export default async function DashboardLayout({
               {n.icon} {n.label}
             </Link>
           ))}
+          <form action={logout} className="shrink-0">
+            <button className="whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium text-neutral-500 hover:bg-neutral-100">
+              ↪ Salir
+            </button>
+          </form>
         </div>
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>

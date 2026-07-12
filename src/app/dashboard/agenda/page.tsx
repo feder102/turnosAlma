@@ -83,7 +83,7 @@ export default async function AgendaPage({
         }
       />
 
-      <div className="mb-4 flex gap-2 text-sm">
+      <div className="mb-4 flex flex-wrap gap-2 text-sm">
         <Link
           href={`/dashboard/agenda?semana=${weekOffset}&vista=odontologo`}
           className={`rounded-full px-4 py-1.5 font-medium ${

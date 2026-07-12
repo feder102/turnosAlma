@@ -77,7 +77,7 @@ export default async function PacientePage({
         }
       />
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         {/* Datos personales */}
         <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm lg:col-span-1">
           <h2 className="mb-3 font-semibold">Datos</h2>

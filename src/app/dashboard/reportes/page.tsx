@@ -99,7 +99,7 @@ export default async function ReportesPage({
         />
       </div>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
           <h2 className="mb-3 font-semibold">Turnos por estado</h2>
           <ul className="flex flex-col gap-2 text-sm">

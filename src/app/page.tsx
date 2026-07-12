@@ -79,22 +79,41 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+function LoginIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+      <path d="M10 17l5-5-5-5" />
+      <path d="M15 12H3" />
+    </svg>
+  );
+}
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-white text-neutral-900">
       {/* Header */}
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
-          <Link href="/" className="flex items-center gap-2.5">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6">
+          <Link href="/" className="flex min-w-0 items-center gap-2.5">
             <Image
               src="/clinica/logo.jpg"
               alt="Maxilofacial San Juan"
               width={44}
               height={44}
-              className="h-10 w-10 rounded-lg object-cover"
+              className="h-10 w-10 shrink-0 rounded-lg object-cover"
               priority
             />
-            <span className="text-base font-bold leading-tight tracking-tight sm:text-lg">
+            <span className="truncate text-base font-bold leading-tight tracking-tight sm:text-lg">
               Maxilofacial{" "}
               <span className="font-normal text-neutral-500">San Juan</span>
             </span>
@@ -110,7 +129,15 @@ export default function Home() {
               Contacto
             </a>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              href="/login"
+              aria-label="Acceso profesionales"
+              title="Acceso profesionales"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-neutral-300 text-neutral-700 transition hover:bg-neutral-100 sm:hidden"
+            >
+              <LoginIcon className="h-5 w-5" />
+            </Link>
             <Link
               href="/login"
               className="hidden rounded-full border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 sm:inline-block"
@@ -119,7 +146,7 @@ export default function Home() {
             </Link>
             <Link
               href="/reservar"
-              className="rounded-full bg-amber-400 px-5 py-2 text-sm font-bold text-neutral-900 shadow-sm transition hover:bg-amber-300"
+              className="whitespace-nowrap rounded-full bg-amber-400 px-4 py-2 text-sm font-bold text-neutral-900 shadow-sm transition hover:bg-amber-300 sm:px-5"
             >
               Turnos online
             </Link>

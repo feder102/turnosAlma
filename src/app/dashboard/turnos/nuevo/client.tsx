@@ -64,7 +64,7 @@ export function NewAppointmentForm({
     <form action={submit} className="flex flex-col gap-5">
       {/* Paciente */}
       <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-        <div className="mb-3 flex gap-2 text-sm">
+        <div className="mb-3 flex flex-wrap gap-2 text-sm">
           <button
             type="button"
             onClick={() => setMode("existing")}

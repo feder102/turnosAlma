@@ -47,7 +47,7 @@ export default async function TurnoDetailPage({
       />
 
       <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-        <dl className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
+        <dl className="grid grid-cols-1 gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
           <Row label="Fecha" value={formatDate(appt.startsAt, tz)} />
           <Row label="Hora" value={`${formatTime(appt.startsAt, tz)} — ${formatTime(appt.endsAt, tz)} hs`} />
           <Row
