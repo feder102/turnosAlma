@@ -88,7 +88,7 @@ export async function createAppointment(params: {
 
   const endsAt = new Date(params.startsAt.getTime() + treatment.durationMin * 60000);
 
-  // Feriado del consultorio o ausencia del odontólogo en esa fecha.
+  // Feriado del centro o ausencia del profesional en esa fecha.
   const clinicTz = (await prisma.clinic.findFirst({ select: { timezone: true } }))?.timezone;
   const dateStr = utcToZonedParts(params.startsAt, clinicTz).dateStr;
   const dayOff = await findDayOffConflict({ dentistId: params.dentistId, dateStr });
@@ -124,7 +124,7 @@ export async function createAppointment(params: {
   const clinic = await prisma.clinic.findFirst();
   const vars = {
     paciente: patient.firstName,
-    consultorio: clinic?.name ?? "",
+    centro: clinic?.name ?? "",
     direccion: clinic?.address ?? "",
     tratamiento: treatment.name,
     fecha: formatDate(appointment.startsAt, clinic?.timezone),

@@ -6,10 +6,10 @@ import { formatShortDate } from "@/lib/format";
 import { PageTitle } from "../ui";
 import { DentistRowActions } from "./row-actions";
 
-export const metadata = { title: "Odontólogos — Consultorio" };
+export const metadata = { title: "Profesionales — Centro" };
 export const dynamic = "force-dynamic";
 
-// ABM de odontólogos: solo el administrador.
+// ABM de profesionales: solo el administrador.
 export default async function DentistasPage() {
   await requireUser(["ADMIN"]);
 
@@ -24,13 +24,13 @@ export default async function DentistasPage() {
   return (
     <div>
       <PageTitle
-        title="Odontólogos"
+        title="Profesionales"
         action={
           <Link
             href="/dashboard/dentistas/nuevo"
             className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700"
           >
-            + Nuevo odontólogo
+            + Nuevo profesional
           </Link>
         }
       />
@@ -113,7 +113,7 @@ export default async function DentistasPage() {
             {dentists.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-8 text-center text-neutral-500">
-                  Todavía no hay odontólogos cargados.
+                  Todavía no hay profesionales cargados.
                 </td>
               </tr>
             )}
@@ -151,7 +151,7 @@ function Avatar({
       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold"
       style={{ borderColor: color, color }}
     >
-      {initials || "🦷"}
+      {initials || "✨"}
     </div>
   );
 }

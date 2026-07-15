@@ -3,7 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { PageTitle } from "../../ui";
 import { NewAppointmentForm } from "./client";
 
-export const metadata = { title: "Nuevo turno — Consultorio" };
+export const metadata = { title: "Nuevo turno — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function NuevoTurnoPage() {

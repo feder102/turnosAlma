@@ -8,7 +8,7 @@ import { StatusBadge, PayBadge, PageTitle } from "../../ui";
 import { setAppointmentStatus, saveClinicalNote } from "../../actions";
 import { RescheduleForm, ManualPaymentButton, RefundButton } from "./client";
 
-export const metadata = { title: "Turno — Consultorio" };
+export const metadata = { title: "Turno — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function TurnoDetailPage({
@@ -54,8 +54,8 @@ export default async function TurnoDetailPage({
             label="Tratamiento"
             value={`${appt.treatment.name}${appt.sessionNumber ? ` (sesión ${appt.sessionNumber}${appt.plan ? ` de ${appt.plan.totalSessions}` : ""})` : ""}`}
           />
-          <Row label="Odontólogo" value={appt.dentist.name} />
-          <Row label="Sillón" value={appt.chair.name} />
+          <Row label="Profesional" value={appt.dentist.name} />
+          <Row label="Cabina" value={appt.chair.name} />
           <Row label="Importe" value={formatMoney(appt.priceCents)} />
         </dl>
         <div className="mt-3 border-t border-neutral-100 pt-3 text-sm">

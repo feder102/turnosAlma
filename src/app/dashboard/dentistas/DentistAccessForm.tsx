@@ -38,8 +38,8 @@ export function DentistAccessForm({
       <h2 className="font-semibold text-neutral-800">Acceso al sistema</h2>
       <p className="mt-1 text-xs text-neutral-400">
         {hasAccount
-          ? "Actualizá la contraseña con la que el odontólogo ingresa al panel."
-          : "Este odontólogo todavía no tiene cuenta de acceso. Creá una para que pueda ingresar al panel."}
+          ? "Actualizá la contraseña con la que el profesional ingresa al panel."
+          : "Este profesional todavía no tiene cuenta de acceso. Creá una para que pueda ingresar al panel."}
       </p>
 
       <form
@@ -70,7 +70,7 @@ export function DentistAccessForm({
               type="email"
               required
               defaultValue={contactEmail ?? ""}
-              placeholder="odontologo@consultorio.com"
+              placeholder="odontologo@centro.com"
               className={inputClass}
             />
           )}

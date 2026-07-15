@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { formatMoney, formatTime, todayStr, zonedToUtc, addDaysStr } from "@/lib/format";
 import { StatusBadge, PayBadge, StatCard, PageTitle } from "./ui";
 
-export const metadata = { title: "Dashboard — Consultorio" };
+export const metadata = { title: "Dashboard — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardHome() {
@@ -17,7 +17,7 @@ export default async function DashboardHome() {
   const dayEnd = zonedToUtc(addDaysStr(today, 1), "00:00", tz);
   const monthStart = zonedToUtc(today.slice(0, 8) + "01", "00:00", tz);
 
-  // El odontólogo ve solo su agenda
+  // El profesional ve solo su agenda
   const dentistFilter =
     session.role === "DENTIST" && session.dentistId
       ? { dentistId: session.dentistId }
@@ -69,7 +69,7 @@ export default async function DashboardHome() {
         )
       : 0;
 
-  // Agrupar turnos de hoy por odontólogo
+  // Agrupar turnos de hoy por profesional
   const byDentist = new Map<string, typeof todayAppts>();
   for (const a of todayAppts) {
     const list = byDentist.get(a.dentist.name) ?? [];
@@ -103,9 +103,9 @@ export default async function DashboardHome() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Turnos de hoy por odontólogo */}
+        {/* Turnos de hoy por profesional */}
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Hoy, por odontólogo</h2>
+          <h2 className="mb-3 text-lg font-semibold">Hoy, por profesional</h2>
           {todayAppts.length === 0 && (
             <p className="rounded-xl border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
               No hay turnos para hoy.

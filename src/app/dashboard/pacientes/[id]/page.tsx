@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { formatDateTime, formatMoney, formatShortDate } from "@/lib/format";
 import { StatusBadge, PayBadge, PageTitle } from "../../ui";
 
-export const metadata = { title: "Ficha de paciente — Consultorio" };
+export const metadata = { title: "Ficha de paciente — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function PacientePage({
@@ -36,7 +36,7 @@ export default async function PacientePage({
   });
   if (!patient) notFound();
 
-  // El odontólogo accede solo a fichas de pacientes que atendió
+  // El profesional accede solo a fichas de pacientes que atendió
   if (
     session.role === "DENTIST" &&
     session.dentistId &&

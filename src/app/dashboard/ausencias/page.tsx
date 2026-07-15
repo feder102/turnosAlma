@@ -4,12 +4,12 @@ import { todayStr } from "@/lib/format";
 import { PageTitle } from "../ui";
 import { AusenciasManager } from "./manage-client";
 
-export const metadata = { title: "Ausencias y feriados — Consultorio" };
+export const metadata = { title: "Ausencias y feriados — Centro" };
 export const dynamic = "force-dynamic";
 
 // Configuración de días no laborables:
-//  · Admin: feriados del consultorio + ausencias de cualquier odontólogo.
-//  · Odontólogo: sus propias ausencias (vacaciones, francos, licencias).
+//  · Admin: feriados del centro + ausencias de cualquier profesional.
+//  · Profesional: sus propias ausencias (vacaciones, francos, licencias).
 export default async function AusenciasPage() {
   const session = await requireUser(["ADMIN", "DENTIST"]);
   const clinic = await prisma.clinic.findFirst({ select: { timezone: true } });
@@ -17,7 +17,7 @@ export default async function AusenciasPage() {
 
   const isAdmin = session.role === "ADMIN";
 
-  // El odontólogo solo carga/ve lo suyo; el admin, todo.
+  // El profesional solo carga/ve lo suyo; el admin, todo.
   const [dentists, timeOff] = await Promise.all([
     isAdmin
       ? prisma.dentist.findMany({
@@ -46,8 +46,8 @@ export default async function AusenciasPage() {
     <div>
       <PageTitle title="Ausencias y feriados" />
       <p className="mb-6 max-w-2xl text-sm text-neutral-500">
-        Los días cargados acá dejan de ofrecer turnos: los feriados cierran el consultorio para
-        todos, y las ausencias bloquean la agenda del odontólogo (vacaciones, francos, licencias).
+        Los días cargados acá dejan de ofrecer turnos: los feriados cierran el centro para
+        todos, y las ausencias bloquean la agenda del profesional (vacaciones, francos, licencias).
       </p>
       <AusenciasManager
         role={session.role}

@@ -27,9 +27,9 @@ export function ChairManager({ chairs }: { chairs: ChairRow[] }) {
 
   return (
     <section className="mb-8 rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-      <h2 className="mb-1 font-semibold">Gestionar sillones</h2>
+      <h2 className="mb-1 font-semibold">Gestionar cabinas</h2>
       <p className="mb-4 text-sm text-neutral-500">
-        Solo el administrador puede crear, renombrar, desactivar o eliminar sillones.
+        Solo el administrador puede crear, renombrar, desactivar o eliminar cabinas.
       </p>
 
       {error && (
@@ -59,11 +59,11 @@ export function ChairManager({ chairs }: { chairs: ChairRow[] }) {
         className="flex flex-wrap items-end gap-3 border-t border-dashed border-neutral-300 pt-4 text-sm"
       >
         <label className="text-neutral-500">
-          Nuevo sillón
+          Nueva cabina
           <input
             name="name"
             required
-            placeholder='Ej.: "Sillón 4"'
+            placeholder='Ej.: "Cabina 4"'
             className="mt-1 block rounded-lg border border-neutral-300 px-3 py-2 text-neutral-900"
           />
         </label>

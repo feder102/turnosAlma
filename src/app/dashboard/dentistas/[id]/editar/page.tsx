@@ -6,7 +6,7 @@ import { PageTitle } from "../../../ui";
 import { DentistForm } from "../../DentistForm";
 import { DentistAccessForm } from "../../DentistAccessForm";
 
-export const metadata = { title: "Editar odontólogo — Consultorio" };
+export const metadata = { title: "Editar profesional — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function EditarDentistaPage({

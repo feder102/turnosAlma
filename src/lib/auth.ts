@@ -80,7 +80,7 @@ export async function requireUser(roles?: Role[]): Promise<Session> {
   return session;
 }
 
-// Recepción y admin gestionan turnos/cobros; el odontólogo solo ve lo suyo.
+// Recepción y admin gestionan turnos/cobros; el profesional solo ve lo suyo.
 export function canManageBookings(role: Role): boolean {
   return role === "ADMIN" || role === "RECEPTION";
 }

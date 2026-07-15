@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
       include: { patient: true, dentist: true, treatment: true, chair: true },
       orderBy: { startsAt: "asc" },
     });
-    header = ["Fecha", "Paciente", "Teléfono", "Tratamiento", "Odontólogo", "Sillón", "Estado", "Estado de pago", "Importe"];
+    header = ["Fecha", "Paciente", "Teléfono", "Tratamiento", "Profesional", "Cabina", "Estado", "Estado de pago", "Importe"];
     rows = appointments.map((a) => [
       formatDateTime(a.startsAt, tz),
       `${a.patient.lastName}, ${a.patient.firstName}`,

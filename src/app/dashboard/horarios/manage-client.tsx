@@ -55,8 +55,8 @@ export function HorariosManager({
     return (
       <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-700">
         {isAdmin
-          ? "No hay odontólogos activos cargados."
-          : "Tu usuario no está vinculado a un odontólogo. Pedile al administrador que lo vincule."}
+          ? "No hay profesionales activos cargados."
+          : "Tu usuario no está vinculado a un profesional. Pedile al administrador que lo vincule."}
       </p>
     );
   }
@@ -71,7 +71,7 @@ export function HorariosManager({
 
       {isAdmin && (
         <label className="text-sm text-neutral-500">
-          Odontólogo
+          Profesional
           <select
             value={dentist.id}
             onChange={(e) => {
@@ -91,8 +91,8 @@ export function HorariosManager({
 
       {dentist.chairs.length === 0 && (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-700">
-          {isAdmin ? "Este odontólogo" : "No tenés"} sillones asignados: aunque cargue horarios,
-          no se van a poder ofrecer turnos. {isAdmin ? "Asignale un sillón desde su ficha." : "Pedile al administrador que te asigne uno."}
+          {isAdmin ? "Este profesional" : "No tenés"} cabinas asignados: aunque cargue horarios,
+          no se van a poder ofrecer turnos. {isAdmin ? "Asignale una cabina desde su ficha." : "Pedile al administrador que te asigne una."}
         </p>
       )}
 
@@ -208,7 +208,7 @@ function AddBlockForm({
         />
       </label>
       <label className="text-neutral-500">
-        Sillón
+        Cabina
         <select
           name="chairId"
           defaultValue=""

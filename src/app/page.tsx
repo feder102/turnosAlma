@@ -1,73 +1,76 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Maxilofacial San Juan — Medicina de Alta Complejidad",
+  title: "Alma San Juan — Depilación Definitiva Láser | Centro Oficial Soprano ICE",
   description:
-    "Cirugía oral y maxilofacial, implantes, ortodoncia y estética dental en San Juan. Reservá tu turno online.",
+    "Único centro oficial Soprano ICE en San Juan. Depilación definitiva láser para mujer y hombre. Reservá tu turno online.",
 };
 
-// Información e imágenes tomadas de instagram.com/maxilofacialsanjuan
+// Información tomada de instagram.com/almasopranoicesj
 const CLINIC = {
-  name: "Maxilofacial San Juan",
-  tagline: "Medicina de Alta Complejidad",
-  address: "Santiago del Estero Sur 615, San Juan, Argentina",
-  phone: "264 460-5493",
-  whatsapp: "https://wa.me/542644605493",
-  instagram: "https://www.instagram.com/maxilofacialsanjuan/",
-  instagramHandle: "@maxilofacialsanjuan",
+  name: "Alma San Juan",
+  tagline: "Centro Oficial Soprano ICE",
+  address: "Paula Albarracín de Sarmiento 1085 (Sur), Capital, San Juan",
+  phone: "264 419-1588",
+  whatsapp: "https://wa.me/542644191588",
+  instagram: "https://www.instagram.com/almasopranoicesj/",
+  instagramHandle: "@almasopranoicesj",
   mapsUrl:
-    "https://www.google.com/maps/search/?api=1&query=Santiago+del+Estero+Sur+615%2C+San+Juan%2C+Argentina",
+    "https://www.google.com/maps/search/?api=1&query=Paula+Albarrac%C3%ADn+de+Sarmiento+1085+Sur%2C+San+Juan%2C+Argentina",
 };
 
 const SERVICES = [
   {
-    icon: "🏥",
-    title: "Cirugía Oral y Maxilofacial",
+    icon: "🦵",
+    title: "Piernas completas",
     description:
-      "Cirugías realizadas en forma minuciosa, buscando la mayor armonía posible del rostro y mitigando excesos y defectos.",
-  },
-  {
-    icon: "🦷",
-    title: "Implantología",
-    description:
-      "Implantes dentales con equipos de última generación y tecnología de punta.",
-  },
-  {
-    icon: "😁",
-    title: "Ortodoncia y Ortopedia",
-    description:
-      "Tu tratamiento en manos de especialistas. La consulta temprana es clave para lograr resultados oportunos y predecibles.",
+      "El tratamiento más elegido: piernas enteras con tecnología Soprano ICE, prácticamente indoloro y apto todo el año.",
   },
   {
     icon: "✨",
-    title: "Estética Dental",
+    title: "Cavado, axilas y tira de cola",
     description:
-      "Tratamientos estéticos para lograr la armonía de tu sonrisa y de tu rostro.",
+      "Las zonas más sensibles tratadas con el sistema ICE de frío continuo, para una experiencia cómoda y segura.",
+  },
+  {
+    icon: "💆‍♀️",
+    title: "Rostro y bozo",
+    description:
+      "Depilación facial delicada y precisa, ideal para bozo, mentón y rostro completo.",
+  },
+  {
+    icon: "💪",
+    title: "Depilación masculina",
+    description:
+      "Espalda, tórax, piernas y más. Planes pensados para el vello masculino, más grueso y resistente.",
   },
 ];
 
-const TEAM = [
+const BENEFITS = [
   {
-    name: "Dr. Javier Peñate",
-    role: "Médico y odontólogo · Cirujano maxilofacial",
-    photo: "/clinica/equipo-penate.jpg",
+    icon: "❄️",
+    title: "Tecnología ICE",
+    description:
+      "Frío continuo en la piel durante todo el disparo: un tratamiento prácticamente indoloro.",
   },
   {
-    name: "Dra. Alejandra Alé",
-    role: "Odontóloga Ortodoncista · M.P. 988",
-    photo: "/clinica/equipo-ale.jpg",
+    icon: "🏅",
+    title: "Centro oficial",
+    description:
+      "Somos el único centro oficial Soprano ICE en San Juan. Equipamiento original de Alma Lasers.",
   },
   {
-    name: "Dra. Marianela Bueno",
-    role: "Odontóloga Ortodoncista · M.P. 957",
-    photo: "/clinica/equipo-marianela.jpg",
+    icon: "🌞",
+    title: "Todo el año",
+    description:
+      "Apto para todo tipo de piel, incluso piel bronceada. Podés tratarte los 365 días del año.",
   },
   {
-    name: "Dr. Héctor Herrero",
-    role: "Odontólogo · Estética dental · M.P. 1040",
-    photo: "/clinica/equipo-herrero.jpg",
+    icon: "📈",
+    title: "Resultados reales",
+    description:
+      "Reducción progresiva y definitiva del vello, sesión a sesión, con seguimiento profesional.",
   },
 ];
 
@@ -105,25 +108,19 @@ export default function Home() {
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Image
-              src="/clinica/logo.jpg"
-              alt="Maxilofacial San Juan"
-              width={44}
-              height={44}
-              className="h-10 w-10 shrink-0 rounded-lg object-cover"
-              priority
-            />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-rose-100 to-fuchsia-100 text-lg font-bold text-fuchsia-700">
+              A
+            </span>
             <span className="truncate text-base font-bold leading-tight tracking-tight sm:text-lg">
-              Maxilofacial{" "}
-              <span className="font-normal text-neutral-500">San Juan</span>
+              Alma <span className="font-normal text-neutral-500">San Juan</span>
             </span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm font-medium text-neutral-600 lg:flex">
             <a href="#servicios" className="transition hover:text-neutral-900">
-              Servicios
+              Zonas
             </a>
-            <a href="#equipo" className="transition hover:text-neutral-900">
-              Equipo
+            <a href="#soprano" className="transition hover:text-neutral-900">
+              Soprano ICE
             </a>
             <a href="#contacto" className="transition hover:text-neutral-900">
               Contacto
@@ -146,7 +143,7 @@ export default function Home() {
             </Link>
             <Link
               href="/reservar"
-              className="whitespace-nowrap rounded-full bg-amber-400 px-4 py-2 text-sm font-bold text-neutral-900 shadow-sm transition hover:bg-amber-300 sm:px-5"
+              className="whitespace-nowrap rounded-full bg-fuchsia-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-fuchsia-500 sm:px-5"
             >
               Turnos online
             </Link>
@@ -155,25 +152,25 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-amber-50 to-white">
+      <section className="bg-gradient-to-b from-rose-50 to-white">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
           <div className="text-center md:text-left">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-amber-600">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-fuchsia-600">
               {CLINIC.tagline}
             </p>
             <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-              Tu nueva agenda de{" "}
-              <span className="text-amber-500">turnos online</span>
+              Tu piel merece la{" "}
+              <span className="text-fuchsia-600">mejor tecnología</span>
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg text-neutral-600 md:mx-0">
-              Cirugía oral y maxilofacial · Implantes · Ortodoncia · Estética
-              dental. No pierdas tiempo llamando: autogestioná tu turno, 24/7,
-              en pocos clics.
+              Depilación definitiva láser con Soprano ICE, el equipo líder en el
+              mundo. No pierdas tiempo llamando: autogestioná tu turno, 24/7, en
+              pocos clics.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row md:items-start">
               <Link
                 href="/reservar"
-                className="w-full rounded-full bg-amber-400 px-8 py-4 text-lg font-bold text-neutral-900 shadow-lg shadow-amber-400/30 transition hover:bg-amber-300 sm:w-auto"
+                className="w-full rounded-full bg-fuchsia-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-fuchsia-600/30 transition hover:bg-fuchsia-500 sm:w-auto"
               >
                 ¡Quiero mi turno!
               </Link>
@@ -189,15 +186,19 @@ export default function Home() {
             </div>
           </div>
           <div className="relative">
-            <div className="overflow-hidden rounded-3xl shadow-xl ring-1 ring-neutral-200">
-              <Image
-                src="/clinica/implantes.jpg"
-                alt="Atención en Maxilofacial San Juan con tecnología de punta"
-                width={640}
-                height={640}
-                className="h-full w-full object-cover"
-                priority
-              />
+            <div className="flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-rose-100 via-fuchsia-50 to-violet-100 shadow-xl ring-1 ring-neutral-200">
+              <div className="px-10 text-center">
+                <p className="text-7xl">✨</p>
+                <p className="mt-6 text-2xl font-bold text-fuchsia-900">
+                  Resultados reales.
+                </p>
+                <p className="text-2xl font-semibold text-fuchsia-700">
+                  Tecnología original.
+                </p>
+                <p className="mt-4 text-sm uppercase tracking-widest text-fuchsia-500">
+                  Soprano ICE · Alma Lasers
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -207,9 +208,9 @@ export default function Home() {
       <section className="border-y border-neutral-100 bg-neutral-50">
         <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 text-center sm:grid-cols-3">
           <div>
-            <p className="font-semibold">Equipos de última generación</p>
+            <p className="font-semibold">Prácticamente indoloro</p>
             <p className="mt-1 text-sm text-neutral-500">
-              Tecnología de punta al servicio de tu salud
+              Sistema ICE de frío continuo en la piel
             </p>
           </div>
           <div>
@@ -227,22 +228,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Servicios */}
+      {/* Zonas / Servicios */}
       <section id="servicios" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
         <h2 className="text-center text-3xl font-bold tracking-tight">
-          Nuestros servicios
+          ¿Qué zonas tratamos?
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-center text-neutral-600">
-          Medicina de alta complejidad en cirugía oral y maxilofacial,
-          implantología, ortodoncia y estética dental.
+          Depilación definitiva para mujer y hombre, con planes por zona o
+          combos de cuerpo completo.
         </p>
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
           {SERVICES.map((service) => (
             <div
               key={service.title}
-              className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition hover:border-amber-200 hover:shadow-md"
+              className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition hover:border-fuchsia-200 hover:shadow-md"
             >
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-2xl">
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-2xl">
                 {service.icon}
               </div>
               <h3 className="text-lg font-semibold">{service.title}</h3>
@@ -254,80 +255,55 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Cirugía ortognática — imagen + texto */}
-      <section className="bg-neutral-50">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
-          <div className="order-2 overflow-hidden rounded-3xl shadow-lg ring-1 ring-neutral-200 md:order-1">
-            <Image
-              src="/clinica/cirugia.jpg"
-              alt="Cirugía ortognática en Maxilofacial San Juan"
-              width={640}
-              height={640}
-              className="h-full w-full object-cover"
-            />
+      {/* Soprano ICE */}
+      <section id="soprano" className="scroll-mt-20 bg-neutral-50">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <h2 className="text-center text-3xl font-bold tracking-tight">
+            ¿Por qué Soprano ICE?
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-neutral-600">
+            Cada vez que te depilás con cera, el folículo resiste. Con láser, no
+            tiene chance.
+          </p>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {BENEFITS.map((benefit) => (
+              <div
+                key={benefit.title}
+                className="rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-sm"
+              >
+                <p className="text-3xl">{benefit.icon}</p>
+                <h3 className="mt-3 font-semibold">{benefit.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
           </div>
-          <div className="order-1 md:order-2">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Armonía del rostro
-            </h2>
-            <p className="mt-4 text-neutral-600">
-              Como expertos maxilofaciales tenemos una gran pasión por la
-              armonía del rostro. Cuando nos enfrentamos a una cirugía
-              maxilofacial, la llevamos a cabo en forma minuciosa, buscando la
-              mayor armonía posible y mitigando excesos y defectos del rostro.
-            </p>
-            <p className="mt-4 text-neutral-600">
-              La cirugía ortognática permite lograr cambios faciales en el
-              paciente, mejorando funciones y estética a la vez.
-            </p>
+          <div className="mt-10 text-center">
             <Link
               href="/reservar"
-              className="mt-6 inline-block rounded-full bg-amber-400 px-6 py-3 font-bold text-neutral-900 transition hover:bg-amber-300"
+              className="inline-block rounded-full bg-fuchsia-600 px-6 py-3 font-bold text-white transition hover:bg-fuchsia-500"
             >
-              Pedí tu consulta
+              Empezá tu tratamiento
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Equipo */}
-      <section id="equipo" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
-        <h2 className="text-center text-3xl font-bold tracking-tight">
-          Nuestro equipo
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-center text-neutral-600">
-          Grandes profesionales, correctamente capacitados, para acompañarte en
-          cada tratamiento.
-        </p>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {TEAM.map((member) => (
-            <figure
-              key={member.name}
-              className="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm transition hover:shadow-md"
-            >
-              <Image
-                src={member.photo}
-                alt={`${member.name} — ${member.role}`}
-                width={640}
-                height={640}
-                className="h-full w-full object-cover"
-              />
-            </figure>
-          ))}
-        </div>
-      </section>
-
       {/* Sede / Contacto */}
-      <section id="contacto" className="scroll-mt-20 bg-neutral-50">
-        <div className="mx-auto grid max-w-6xl items-stretch gap-10 px-6 py-20 md:grid-cols-2">
-          <div className="overflow-hidden rounded-3xl shadow-lg ring-1 ring-neutral-200">
-            <Image
-              src="/clinica/clinica.jpg"
-              alt="Sede de Maxilofacial San Juan"
-              width={640}
-              height={640}
-              className="h-full w-full object-cover"
-            />
+      <section id="contacto" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
+        <div className="grid items-stretch gap-10 md:grid-cols-2">
+          <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-violet-100 via-fuchsia-50 to-rose-100 shadow-lg ring-1 ring-neutral-200 md:aspect-auto">
+            <div className="px-10 text-center">
+              <p className="text-6xl">📍</p>
+              <p className="mt-4 text-xl font-bold text-fuchsia-900">
+                Paula Albarracín de Sarmiento 1085 (Sur)
+              </p>
+              <p className="text-lg text-fuchsia-700">Capital · San Juan</p>
+              <p className="mt-3 text-sm text-fuchsia-500">
+                Lunes a sábado · 7:30 a 22:00 hs
+              </p>
+            </div>
           </div>
           <div className="flex flex-col justify-center">
             <h2 className="text-3xl font-bold tracking-tight">¿Dónde estamos?</h2>
@@ -338,7 +314,7 @@ export default function Home() {
                   href={CLINIC.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 transition hover:text-amber-600 hover:underline"
+                  className="underline-offset-4 transition hover:text-fuchsia-600 hover:underline"
                 >
                   {CLINIC.address}
                 </a>
@@ -349,7 +325,7 @@ export default function Home() {
                   href={CLINIC.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 transition hover:text-amber-600 hover:underline"
+                  className="underline-offset-4 transition hover:text-fuchsia-600 hover:underline"
                 >
                   Turnos y consultas: {CLINIC.phone}
                 </a>
@@ -360,7 +336,7 @@ export default function Home() {
                   href={CLINIC.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 transition hover:text-amber-600 hover:underline"
+                  className="underline-offset-4 transition hover:text-fuchsia-600 hover:underline"
                 >
                   {CLINIC.instagramHandle}
                 </a>
@@ -369,12 +345,12 @@ export default function Home() {
             <div className="mt-8 rounded-3xl bg-neutral-900 p-8 text-center text-white sm:text-left">
               <h3 className="text-2xl font-bold">¡No esperes más!</h3>
               <p className="mt-2 text-neutral-300">
-                Reservá tu turno online y recibí atención personalizada.
+                Reservá tu turno online y empezá tu depilación definitiva.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/reservar"
-                  className="rounded-full bg-amber-400 px-6 py-3 text-center font-bold text-neutral-900 transition hover:bg-amber-300"
+                  className="rounded-full bg-fuchsia-600 px-6 py-3 text-center font-bold text-white transition hover:bg-fuchsia-500"
                 >
                   Reservar un turno
                 </Link>
@@ -393,20 +369,11 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-neutral-200 bg-white">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-neutral-500 sm:flex-row">
-          <div className="flex items-center gap-2.5">
-            <Image
-              src="/clinica/logo.jpg"
-              alt="Maxilofacial San Juan"
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-md object-cover"
-            />
-            <p>
-              {CLINIC.name} · {CLINIC.address}
-            </p>
-          </div>
-          <Link href="/login" className="transition hover:text-amber-600">
-            Acceso al consultorio
+          <p>
+            {CLINIC.name} · {CLINIC.tagline} · {CLINIC.address}
+          </p>
+          <Link href="/login" className="transition hover:text-fuchsia-600">
+            Acceso al centro
           </Link>
         </div>
       </footer>

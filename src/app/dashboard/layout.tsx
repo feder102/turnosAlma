@@ -7,12 +7,12 @@ const NAV = [
   { href: "/dashboard", label: "Inicio", icon: "🏠", roles: ["ADMIN", "RECEPTION", "DENTIST"] },
   { href: "/dashboard/agenda", label: "Agenda", icon: "📅", roles: ["ADMIN", "RECEPTION", "DENTIST"] },
   { href: "/dashboard/turnos", label: "Turnos", icon: "🗓️", roles: ["ADMIN", "RECEPTION", "DENTIST"] },
-  { href: "/dashboard/sillones", label: "Sillones", icon: "🪑", roles: ["ADMIN", "RECEPTION"] },
-  { href: "/dashboard/dentistas", label: "Odontólogos", icon: "👩‍⚕️", roles: ["ADMIN"] },
+  { href: "/dashboard/sillones", label: "Cabinas", icon: "🪑", roles: ["ADMIN", "RECEPTION"] },
+  { href: "/dashboard/dentistas", label: "Profesionales", icon: "👩‍⚕️", roles: ["ADMIN"] },
   { href: "/dashboard/horarios", label: "Horarios", icon: "⏰", roles: ["ADMIN", "DENTIST"] },
   { href: "/dashboard/ausencias", label: "Ausencias", icon: "🌴", roles: ["ADMIN", "DENTIST"] },
   { href: "/dashboard/pacientes", label: "Pacientes", icon: "🧑‍🤝‍🧑", roles: ["ADMIN", "RECEPTION", "DENTIST"] },
-  { href: "/dashboard/tratamientos", label: "Tratamientos", icon: "🦷", roles: ["ADMIN"] },
+  { href: "/dashboard/tratamientos", label: "Tratamientos", icon: "✨", roles: ["ADMIN"] },
   { href: "/dashboard/pagos", label: "Pagos", icon: "💳", roles: ["ADMIN", "RECEPTION"] },
   { href: "/dashboard/mensajes", label: "Mensajes", icon: "💬", roles: ["ADMIN", "RECEPTION"] },
   { href: "/dashboard/reportes", label: "Reportes", icon: "📊", roles: ["ADMIN"] },
@@ -30,7 +30,7 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen">
       <aside className="hidden w-56 flex-col border-r border-neutral-200 bg-white md:flex">
         <div className="border-b border-neutral-200 px-4 py-4">
-          <p className="font-bold">🦷 Sonrisa</p>
+          <p className="font-bold">✨ Alma San Juan</p>
           <p className="mt-0.5 truncate text-sm text-neutral-500">{session.name}</p>
           <p className="text-xs text-neutral-400">{ROLE_LABELS[session.role]}</p>
         </div>

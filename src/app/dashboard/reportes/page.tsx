@@ -4,7 +4,7 @@ import { formatMoney, todayStr, zonedToUtc } from "@/lib/format";
 import { APPOINTMENT_STATUS_LABELS, type AppointmentStatus } from "@/lib/domain";
 import { PageTitle, StatCard } from "../ui";
 
-export const metadata = { title: "Reportes — Consultorio" };
+export const metadata = { title: "Reportes — Centro" };
 export const dynamic = "force-dynamic";
 
 function monthRange(mes: string, tz?: string) {
@@ -113,7 +113,7 @@ export default async function ReportesPage({
         </section>
 
         <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-semibold">Por odontólogo</h2>
+          <h2 className="mb-3 font-semibold">Por profesional</h2>
           <ul className="flex flex-col gap-2 text-sm">
             {[...byDentist.entries()].map(([name, e]) => (
               <li key={name} className="flex justify-between gap-2">

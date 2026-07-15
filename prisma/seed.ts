@@ -1,6 +1,11 @@
-// Seed: consultorio con 3 sillones, 2 odontólogas, 6 tratamientos,
-// 10 pacientes, turnos de la semana actual, un plan de ortodoncia en curso
-// y usuarios del sistema. Credenciales de prueba en el README.
+// Seed: centro de depilación con 2 cabinas Soprano ICE, 2 profesionales,
+// servicios por zona (mujer y hombre), 10 pacientes, turnos de la semana
+// actual, un plan de piernas completas en curso y usuarios del sistema.
+// Credenciales de prueba en el README.
+//
+// Datos del negocio tomados de instagram.com/almasopranoicesj.
+// Los nombres de las profesionales son PLACEHOLDERS (no figuran públicamente
+// en el Instagram): reemplazalos por los reales.
 
 import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
@@ -11,7 +16,7 @@ import { zonedToUtc, addDaysStr, todayStr } from "../src/lib/format";
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-const TZ = "America/Argentina/Buenos_Aires";
+const TZ = "America/Argentina/San_Juan";
 
 async function main() {
   console.log("🧹 Limpiando base…");
@@ -29,159 +34,228 @@ async function main() {
   await prisma.chair.deleteMany();
   await prisma.clinic.deleteMany();
 
-  console.log("🏥 Consultorio y sillones…");
+  console.log("💖 Centro y cabinas…");
   const clinic = await prisma.clinic.create({
     data: {
-      name: "Consultorio Odontológico Sonrisa",
-      address: "Av. Rivadavia 4820, CABA",
-      phone: "+541148670000",
+      name: "Alma San Juan — Centro Oficial Soprano ICE",
+      address: "Paula Albarracín de Sarmiento 1085 (Sur), Capital, San Juan",
+      phone: "+542644191588",
       timezone: TZ,
       openingHours: JSON.stringify([
-        { weekday: 1, open: "09:00", close: "19:00" },
-        { weekday: 2, open: "09:00", close: "19:00" },
-        { weekday: 3, open: "09:00", close: "19:00" },
-        { weekday: 4, open: "09:00", close: "19:00" },
-        { weekday: 5, open: "09:00", close: "18:00" },
-        { weekday: 6, open: "09:00", close: "13:00" },
+        { weekday: 1, open: "07:30", close: "22:00" },
+        { weekday: 2, open: "07:30", close: "22:00" },
+        { weekday: 3, open: "07:30", close: "22:00" },
+        { weekday: 4, open: "07:30", close: "22:00" },
+        { weekday: 5, open: "07:30", close: "22:00" },
+        { weekday: 6, open: "07:30", close: "22:00" },
       ]),
     },
   });
 
-  const [chair1, chair2, chair3] = await Promise.all(
-    ["Sillón 1", "Sillón 2", "Sillón 3"].map((name) =>
+  const [cabina1, cabina2] = await Promise.all(
+    ["Cabina 1 — Soprano ICE", "Cabina 2 — Soprano ICE"].map((name) =>
       prisma.chair.create({ data: { name, clinicId: clinic.id } })
     )
   );
 
-  console.log("🦷 Odontólogas…");
-  const weekdaysFull = [1, 2, 3, 4, 5];
-  const draGomez = await prisma.dentist.create({
+  console.log("✨ Profesionales…");
+  const weekdaysFull = [1, 2, 3, 4, 5, 6];
+  const licCastro = await prisma.dentist.create({
     data: {
-      name: "Dra. Laura Gómez",
-      title: "Dra.",
-      firstName: "Laura",
-      lastName: "Gómez",
-      specialty: "GENERAL",
-      color: "#0ea5e9",
-      phone: "+5491144440001",
-      email: "lgomez@sonrisa.com",
-      license: "MN 45231",
-      hiredAt: new Date("2019-03-01T00:00:00Z"),
-      defaultChairId: chair1.id,
-      chairs: { connect: [{ id: chair1.id }, { id: chair3.id }] }, // atiende en 2 sillones
+      name: "Lic. Vanina Castro",
+      title: "Lic.",
+      firstName: "Vanina",
+      lastName: "Castro",
+      specialty: "LASER_CORPORAL",
+      color: "#d946ef",
+      phone: "+5492644190001",
+      email: "vcastro@almasanjuan.com",
+      license: "MP 1201",
+      hiredAt: new Date("2020-02-01T00:00:00Z"),
+      defaultChairId: cabina1.id,
+      chairs: { connect: [{ id: cabina1.id }, { id: cabina2.id }] },
       schedules: {
-        create: [
-          ...weekdaysFull.map((weekday) => ({ weekday, startTime: "09:00", endTime: "17:00" })),
-          { weekday: 6, startTime: "09:00", endTime: "13:00" },
-        ],
+        create: weekdaysFull.map((weekday) => ({
+          weekday,
+          startTime: "07:30",
+          endTime: "14:30",
+        })),
       },
     },
   });
-  const drRuiz = await prisma.dentist.create({
+  const tecMorales = await prisma.dentist.create({
     data: {
-      name: "Dr. Martín Ruiz",
-      title: "Dr.",
-      firstName: "Martín",
-      lastName: "Ruiz",
-      specialty: "ORTODONCIA",
+      name: "Téc. Julieta Morales",
+      title: "Téc.",
+      firstName: "Julieta",
+      lastName: "Morales",
+      specialty: "LASER_FACIAL",
       color: "#8b5cf6",
-      phone: "+5491144440002",
-      email: "mruiz@sonrisa.com",
-      license: "MN 52890",
-      hiredAt: new Date("2021-07-15T00:00:00Z"),
-      defaultChairId: chair2.id,
-      chairs: { connect: [{ id: chair2.id }] },
+      phone: "+5492644190002",
+      email: "jmorales@almasanjuan.com",
+      license: "MP 1587",
+      hiredAt: new Date("2022-08-15T00:00:00Z"),
+      defaultChairId: cabina2.id,
+      chairs: { connect: [{ id: cabina2.id }] },
       schedules: {
-        create: [1, 2, 3, 4, 5].map((weekday) => ({
+        create: weekdaysFull.map((weekday) => ({
           weekday,
-          startTime: "13:00",
-          endTime: "19:00",
+          startTime: "14:30",
+          endTime: "22:00",
         })),
       },
     },
   });
 
-  console.log("💉 Tratamientos…");
+  console.log("💉 Servicios…");
+  const POST_LASER =
+    "No te expongas al sol directo por 48 hs y usá protector solar FPS 50. Hidratá la zona con crema neutra. Evitá saunas, piletas con cloro y ejercicio intenso por 24 hs.";
+  const PRE_LASER =
+    "Vení con la zona rasurada 24 hs antes (no cera ni pinza los 30 días previos). Piel limpia, sin cremas ni desodorante. Evitá exposición solar intensa la semana previa.";
+
   const consulta = await prisma.treatment.create({
     data: {
-      name: "Consulta / evaluación inicial",
-      description: "Primera visita: diagnóstico y plan de tratamiento.",
-      durationMin: 30,
-      priceCents: 2000000, // $20.000
-      insurancePriceCents: 500000,
+      name: "Evaluación inicial (sin cargo)",
+      description:
+        "Primera visita: evaluamos tu piel y tu vello, respondemos dudas y armamos tu plan de sesiones.",
+      durationMin: 15,
+      priceCents: 0,
     },
   });
-  const limpieza = await prisma.treatment.create({
+  const axilas = await prisma.treatment.create({
     data: {
-      name: "Limpieza y profilaxis",
-      description: "Limpieza profunda, remoción de sarro y pulido.",
-      durationMin: 45,
-      priceCents: 3500000,
-      insurancePriceCents: 800000,
-    },
-  });
-  const extraccion = await prisma.treatment.create({
-    data: {
-      name: "Extracción simple",
-      durationMin: 45,
-      priceCents: 5000000,
-      insurancePriceCents: 1500000,
-      preparationNotes:
-        "Vení habiendo comido liviano. Si tomás anticoagulantes, avisanos con anticipación.",
-      postCareNotes:
-        "Mordé la gasa 30-40 min. No enjuagues ni escupas por 24 hs. Dieta blanda y fría. Ante sangrado abundante o fiebre, contactanos.",
-    },
-  });
-  const endodoncia = await prisma.treatment.create({
-    data: {
-      name: "Endodoncia (tratamiento de conducto)",
-      durationMin: 60,
-      priceCents: 12000000,
-      insurancePriceCents: 4000000,
+      name: "Axilas",
+      durationMin: 15,
+      priceCents: 1200000, // $12.000
       multiSession: true,
-      defaultSessions: 2,
-      sessionIntervalDays: 7,
-      depositCents: 4000000,
-      preparationNotes: "Tomá tu medicación habitual salvo indicación contraria.",
-      postCareNotes:
-        "Es normal sentir molestia 24-48 hs; podés tomar el analgésico indicado. Evitá masticar del lado tratado hasta la próxima sesión.",
+      defaultSessions: 8,
+      sessionIntervalDays: 30,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
     },
   });
-  const ortodoncia = await prisma.treatment.create({
+  const cavado = await prisma.treatment.create({
     data: {
-      name: "Ortodoncia (control mensual)",
-      description: "Colocación y controles periódicos de brackets/alineadores.",
-      durationMin: 30,
-      priceCents: 4500000,
-      insurancePriceCents: null,
+      name: "Cavado completo",
+      durationMin: 20,
+      priceCents: 1800000,
       multiSession: true,
-      defaultSessions: 4,
-      sessionIntervalDays: 21,
+      defaultSessions: 8,
+      sessionIntervalDays: 30,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
+    },
+  });
+  await prisma.treatment.create({
+    data: {
+      name: "Tira de cola",
+      durationMin: 15,
+      priceCents: 1000000,
+      multiSession: true,
+      defaultSessions: 8,
+      sessionIntervalDays: 30,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
+    },
+  });
+  const bozo = await prisma.treatment.create({
+    data: {
+      name: "Bozo",
+      durationMin: 10,
+      priceCents: 800000,
+      multiSession: true,
+      defaultSessions: 10,
+      sessionIntervalDays: 30,
+      postCareNotes: POST_LASER,
+    },
+  });
+  const rostro = await prisma.treatment.create({
+    data: {
+      name: "Rostro completo",
+      durationMin: 25,
+      priceCents: 1800000,
+      multiSession: true,
+      defaultSessions: 10,
+      sessionIntervalDays: 30,
+      postCareNotes: POST_LASER,
+    },
+  });
+  const mediaPierna = await prisma.treatment.create({
+    data: {
+      name: "Media pierna",
+      durationMin: 30,
+      priceCents: 2500000,
+      multiSession: true,
+      defaultSessions: 8,
+      sessionIntervalDays: 30,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
+    },
+  });
+  const piernasCompletas = await prisma.treatment.create({
+    data: {
+      name: "Piernas completas",
+      durationMin: 45,
+      priceCents: 4000000,
+      multiSession: true,
+      defaultSessions: 8,
+      sessionIntervalDays: 30,
+      depositCents: 1000000,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
+    },
+  });
+  const comboFull = await prisma.treatment.create({
+    data: {
+      name: "Combo mujer: piernas + cavado + tira de cola + axilas",
+      description: "El plan más completo, con precio de combo.",
+      durationMin: 75,
+      priceCents: 6000000,
+      multiSession: true,
+      defaultSessions: 8,
+      sessionIntervalDays: 30,
       depositCents: 1500000,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
     },
   });
-  const blanqueamiento = await prisma.treatment.create({
+  const espalda = await prisma.treatment.create({
     data: {
-      name: "Blanqueamiento dental",
-      durationMin: 60,
-      priceCents: 8000000,
-      postCareNotes:
-        "Evitá café, té, vino tinto y cigarrillo por 48 hs. Puede haber sensibilidad leve los primeros días.",
+      name: "Espalda completa (hombre)",
+      durationMin: 40,
+      priceCents: 3000000,
+      multiSession: true,
+      defaultSessions: 10,
+      sessionIntervalDays: 40,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
+    },
+  });
+  await prisma.treatment.create({
+    data: {
+      name: "Tórax completo (hombre)",
+      durationMin: 40,
+      priceCents: 3000000,
+      multiSession: true,
+      defaultSessions: 10,
+      sessionIntervalDays: 40,
+      preparationNotes: PRE_LASER,
+      postCareNotes: POST_LASER,
     },
   });
 
   console.log("🧑‍🤝‍🧑 Pacientes…");
   const patientData = [
-    { firstName: "María", lastName: "Pérez", phone: "+5491155550001", email: "maria.perez@example.com", birthDate: new Date("1988-04-12T12:00:00Z"), insuranceProvider: "OSDE", insuranceNumber: "61234567801", medicalNotes: "Alergia a la penicilina." },
-    { firstName: "Jorge", lastName: "Fernández", phone: "+5491155550002", email: "jorge.f@example.com", birthDate: new Date("1975-09-30T12:00:00Z"), insuranceProvider: "Swiss Medical", insuranceNumber: "40098812" },
-    { firstName: "Lucía", lastName: "Martínez", phone: "+5491155550003", email: "lucia.mtz@example.com", birthDate: new Date("2001-01-22T12:00:00Z") },
-    { firstName: "Carlos", lastName: "Suárez", phone: "+5491155550004", email: "csuarez@example.com", birthDate: new Date("1969-11-05T12:00:00Z"), insuranceProvider: "OSDE", insuranceNumber: "60011223344", medicalNotes: "Hipertenso, toma enalapril." },
-    { firstName: "Ana", lastName: "Rodríguez", phone: "+5491155550005", email: "ana.rdz@example.com", birthDate: new Date("1995-06-17T12:00:00Z") },
-    { firstName: "Pedro", lastName: "López", phone: "+5491155550006", email: "plopez@example.com", birthDate: new Date("1982-02-08T12:00:00Z"), insuranceProvider: "Galeno", insuranceNumber: "77812" },
-    { firstName: "Sofía", lastName: "García", phone: "+5491155550007", email: "sofia.g@example.com", birthDate: new Date("2010-08-25T12:00:00Z"), medicalNotes: "Paciente pediátrica. Madre: Carla García." },
-    { firstName: "Diego", lastName: "Torres", phone: "+5491155550008", email: "dtorres@example.com", birthDate: new Date("1990-12-01T12:00:00Z") },
-    { firstName: "Valentina", lastName: "Ríos", phone: "+5491155550009", email: "vrios@example.com", birthDate: new Date("1998-03-14T12:00:00Z"), insuranceProvider: "OSDE", insuranceNumber: "60987654321" },
-    { firstName: "Roberto", lastName: "Núñez", phone: "+5491155550010", email: "rnunez@example.com", birthDate: new Date("1957-07-19T12:00:00Z"), medicalNotes: "Diabético tipo 2. Prótesis parcial superior." },
+    { firstName: "María", lastName: "Pérez", phone: "+5492645550001", email: "maria.perez@example.com", birthDate: new Date("1988-04-12T12:00:00Z"), medicalNotes: "Piel sensible; usar parámetros suaves." },
+    { firstName: "Julia", lastName: "Fernández", phone: "+5492645550002", email: "julia.f@example.com", birthDate: new Date("1975-09-30T12:00:00Z") },
+    { firstName: "Lucía", lastName: "Martínez", phone: "+5492645550003", email: "lucia.mtz@example.com", birthDate: new Date("2001-01-22T12:00:00Z") },
+    { firstName: "Carlos", lastName: "Suárez", phone: "+5492645550004", email: "csuarez@example.com", birthDate: new Date("1985-11-05T12:00:00Z") },
+    { firstName: "Ana", lastName: "Rodríguez", phone: "+5492645550005", email: "ana.rdz@example.com", birthDate: new Date("1995-06-17T12:00:00Z"), medicalNotes: "Fototipo V: controlar fluencia." },
+    { firstName: "Pedro", lastName: "López", phone: "+5492645550006", email: "plopez@example.com", birthDate: new Date("1982-02-08T12:00:00Z") },
+    { firstName: "Sofía", lastName: "García", phone: "+5492645550007", email: "sofia.g@example.com", birthDate: new Date("2003-08-25T12:00:00Z") },
+    { firstName: "Diego", lastName: "Torres", phone: "+5492645550008", email: "dtorres@example.com", birthDate: new Date("1990-12-01T12:00:00Z") },
+    { firstName: "Valentina", lastName: "Ríos", phone: "+5492645550009", email: "vrios@example.com", birthDate: new Date("1998-03-14T12:00:00Z") },
+    { firstName: "Romina", lastName: "Núñez", phone: "+5492645550010", email: "rnunez@example.com", birthDate: new Date("1992-07-19T12:00:00Z"), medicalNotes: "Embarazo consultado: retomar tratamiento después del parto." },
   ];
   const patients = [];
   for (const p of patientData) patients.push(await prisma.patient.create({ data: p }));
@@ -189,11 +263,11 @@ async function main() {
   console.log("👤 Usuarios…");
   const pw = await bcrypt.hash("admin123", 10);
   await prisma.user.create({
-    data: { email: "admin@sonrisa.com", name: "Admin", passwordHash: pw, role: "ADMIN" },
+    data: { email: "admin@almasanjuan.com", name: "Admin", passwordHash: pw, role: "ADMIN" },
   });
   await prisma.user.create({
     data: {
-      email: "recepcion@sonrisa.com",
+      email: "recepcion@almasanjuan.com",
       name: "Carla (Recepción)",
       passwordHash: await bcrypt.hash("recepcion123", 10),
       role: "RECEPTION",
@@ -201,20 +275,20 @@ async function main() {
   });
   await prisma.user.create({
     data: {
-      email: "lgomez@sonrisa.com",
-      name: "Dra. Laura Gómez",
-      passwordHash: await bcrypt.hash("dentista123", 10),
+      email: "vcastro@almasanjuan.com",
+      name: "Lic. Vanina Castro",
+      passwordHash: await bcrypt.hash("profesional123", 10),
       role: "DENTIST",
-      dentistId: draGomez.id,
+      dentistId: licCastro.id,
     },
   });
   await prisma.user.create({
     data: {
-      email: "mruiz@sonrisa.com",
-      name: "Dr. Martín Ruiz",
-      passwordHash: await bcrypt.hash("dentista123", 10),
+      email: "jmorales@almasanjuan.com",
+      name: "Téc. Julieta Morales",
+      passwordHash: await bcrypt.hash("profesional123", 10),
       role: "DENTIST",
-      dentistId: drRuiz.id,
+      dentistId: tecMorales.id,
     },
   });
 
@@ -228,7 +302,7 @@ async function main() {
     day: number; // offset desde el lunes
     time: string;
     patient: number; // índice
-    dentist: typeof draGomez;
+    dentist: typeof licCastro;
     treatment: { id: string; durationMin: number; priceCents: number; insurancePriceCents: number | null };
     chairId: string;
     status: string;
@@ -236,27 +310,24 @@ async function main() {
     paymentMethod?: string;
   };
   const week: Appt[] = [
-    { day: 0, time: "09:30", patient: 0, dentist: draGomez, treatment: limpieza, chairId: chair1.id, status: "COMPLETED", paymentStatus: "PAID", paymentMethod: "CASH" },
-    { day: 0, time: "11:00", patient: 3, dentist: draGomez, treatment: consulta, chairId: chair1.id, status: "COMPLETED", paymentStatus: "PAID", paymentMethod: "CARD_IN_PERSON" },
-    { day: 0, time: "14:00", patient: 7, dentist: drRuiz, treatment: consulta, chairId: chair2.id, status: "NO_SHOW" },
-    { day: 1, time: "10:00", patient: 4, dentist: draGomez, treatment: blanqueamiento, chairId: chair1.id, status: "COMPLETED", paymentStatus: "PAID", paymentMethod: "TRANSFER" },
-    { day: 1, time: "15:00", patient: 5, dentist: drRuiz, treatment: consulta, chairId: chair2.id, status: "COMPLETED", paymentStatus: "UNPAID" },
-    { day: 2, time: "09:00", patient: 9, dentist: draGomez, treatment: extraccion, chairId: chair1.id, status: "CONFIRMED" },
-    { day: 2, time: "16:00", patient: 2, dentist: drRuiz, treatment: consulta, chairId: chair2.id, status: "CONFIRMED", paymentStatus: "PAID", paymentMethod: "ONLINE" },
-    { day: 3, time: "10:30", patient: 1, dentist: draGomez, treatment: limpieza, chairId: chair1.id, status: "CONFIRMED" },
-    { day: 3, time: "14:30", patient: 6, dentist: drRuiz, treatment: consulta, chairId: chair2.id, status: "PENDING" },
-    { day: 4, time: "09:30", patient: 3, dentist: draGomez, treatment: endodoncia, chairId: chair1.id, status: "CONFIRMED", paymentStatus: "DEPOSIT_PAID", paymentMethod: "ONLINE" },
-    { day: 4, time: "11:00", patient: 8, dentist: draGomez, treatment: consulta, chairId: chair3.id, status: "PENDING" },
+    { day: 0, time: "08:30", patient: 0, dentist: licCastro, treatment: axilas, chairId: cabina1.id, status: "COMPLETED", paymentStatus: "PAID", paymentMethod: "CASH" },
+    { day: 0, time: "11:00", patient: 3, dentist: licCastro, treatment: consulta, chairId: cabina1.id, status: "COMPLETED", paymentStatus: "PAID", paymentMethod: "CARD_IN_PERSON" },
+    { day: 0, time: "15:00", patient: 7, dentist: tecMorales, treatment: consulta, chairId: cabina2.id, status: "NO_SHOW" },
+    { day: 1, time: "10:00", patient: 4, dentist: licCastro, treatment: piernasCompletas, chairId: cabina1.id, status: "COMPLETED", paymentStatus: "PAID", paymentMethod: "TRANSFER" },
+    { day: 1, time: "16:00", patient: 5, dentist: tecMorales, treatment: consulta, chairId: cabina2.id, status: "COMPLETED", paymentStatus: "UNPAID" },
+    { day: 2, time: "09:00", patient: 9, dentist: licCastro, treatment: cavado, chairId: cabina1.id, status: "CONFIRMED" },
+    { day: 2, time: "17:00", patient: 2, dentist: tecMorales, treatment: bozo, chairId: cabina2.id, status: "CONFIRMED", paymentStatus: "PAID", paymentMethod: "ONLINE" },
+    { day: 3, time: "10:30", patient: 1, dentist: licCastro, treatment: mediaPierna, chairId: cabina1.id, status: "CONFIRMED" },
+    { day: 3, time: "15:30", patient: 6, dentist: tecMorales, treatment: rostro, chairId: cabina2.id, status: "PENDING" },
+    { day: 4, time: "08:00", patient: 3, dentist: licCastro, treatment: espalda, chairId: cabina1.id, status: "CONFIRMED", paymentStatus: "DEPOSIT_PAID", paymentMethod: "ONLINE" },
+    { day: 4, time: "11:00", patient: 8, dentist: licCastro, treatment: consulta, chairId: cabina2.id, status: "PENDING" },
   ];
 
   for (const a of week) {
     const startsAt = zonedToUtc(addDaysStr(monday, a.day), a.time, TZ);
     const endsAt = new Date(startsAt.getTime() + a.treatment.durationMin * 60000);
     const patient = patients[a.patient];
-    const price =
-      patient.insuranceProvider && a.treatment.insurancePriceCents != null
-        ? a.treatment.insurancePriceCents
-        : a.treatment.priceCents;
+    const price = a.treatment.priceCents;
     const appt = await prisma.appointment.create({
       data: {
         patientId: patient.id,
@@ -276,11 +347,11 @@ async function main() {
         data: {
           patientId: patient.id,
           appointmentId: appt.id,
-          content: "Procedimiento realizado sin complicaciones.",
-          nextSteps: "Control en 6 meses.",
+          content: "Sesión realizada sin complicaciones. Buena tolerancia al tratamiento.",
+          nextSteps: "Próxima sesión en 30 días.",
         },
       });
-      if (a.paymentStatus === "PAID") {
+      if (a.paymentStatus === "PAID" && price > 0) {
         await prisma.payment.create({
           data: {
             appointmentId: appt.id,
@@ -295,36 +366,36 @@ async function main() {
     }
   }
 
-  console.log("🪥 Plan de ortodoncia (Valentina, sesión 2 de 4 completada)…");
+  console.log("🦵 Plan combo mujer (Valentina, sesión 2 de 8 completada)…");
   const valentina = patients[8];
   const plan = await prisma.treatmentPlan.create({
     data: {
       patientId: valentina.id,
-      treatmentId: ortodoncia.id,
-      dentistId: drRuiz.id,
-      totalSessions: 4,
+      treatmentId: comboFull.id,
+      dentistId: licCastro.id,
+      totalSessions: 8,
       billingMode: "PER_SESSION",
     },
   });
-  // 2 sesiones pasadas completadas, 2 futuras agendadas (cada 3 semanas)
-  const planStart = addDaysStr(monday, -42);
+  // 2 sesiones pasadas completadas, el resto agendado (cada 30 días)
+  const planStart = addDaysStr(monday, -60);
   for (let i = 0; i < 4; i++) {
-    const dateStr = addDaysStr(planStart, i * 21);
-    const startsAt = zonedToUtc(dateStr, "17:00", TZ);
-    const endsAt = new Date(startsAt.getTime() + ortodoncia.durationMin * 60000);
+    const dateStr = addDaysStr(planStart, i * 30);
+    const startsAt = zonedToUtc(dateStr, "09:00", TZ);
+    const endsAt = new Date(startsAt.getTime() + comboFull.durationMin * 60000);
     const done = startsAt.getTime() < Date.now();
     const appt = await prisma.appointment.create({
       data: {
         patientId: valentina.id,
-        dentistId: drRuiz.id,
-        treatmentId: ortodoncia.id,
-        chairId: chair2.id,
+        dentistId: licCastro.id,
+        treatmentId: comboFull.id,
+        chairId: cabina1.id,
         startsAt,
         endsAt,
         status: done ? "COMPLETED" : "CONFIRMED",
         paymentStatus: done ? "PAID" : "UNPAID",
         paymentMethod: done ? "CASH" : null,
-        priceCents: ortodoncia.priceCents,
+        priceCents: comboFull.priceCents,
         planId: plan.id,
         sessionNumber: i + 1,
       },
@@ -334,8 +405,8 @@ async function main() {
         data: {
           patientId: valentina.id,
           appointmentId: appt.id,
-          content: `Ajuste de brackets — sesión ${i + 1}. Buena evolución.`,
-          nextSteps: "Continuar con el plan; próximo ajuste en 3 semanas.",
+          content: `Sesión ${i + 1} de combo completada. Reducción visible del vello.`,
+          nextSteps: "Continuar con el plan; próxima sesión en 30 días.",
         },
       });
       await prisma.payment.create({
@@ -343,7 +414,7 @@ async function main() {
           appointmentId: appt.id,
           planId: plan.id,
           patientId: valentina.id,
-          amountCents: ortodoncia.priceCents,
+          amountCents: comboFull.priceCents,
           kind: "FULL",
           status: "PAID",
           provider: "manual",
@@ -357,27 +428,27 @@ async function main() {
     {
       key: "booking_confirmed",
       name: "Confirmación de turno",
-      body: "Hola {{paciente}} 👋 Tu turno en {{consultorio}} quedó confirmado.\n\n🦷 {{tratamiento}}\n📅 {{fecha}} a las {{hora}} hs\n👩‍⚕️ {{odontologo}}\n📍 {{direccion}}\n\nSi necesitás reprogramar, respondé este mensaje o llamanos. ¡Te esperamos!",
+      body: "Hola {{paciente}} 👋 Tu turno en {{centro}} quedó confirmado.\n\n✨ {{tratamiento}}\n📅 {{fecha}} a las {{hora}} hs\n💁‍♀️ {{odontologo}}\n📍 {{direccion}}\n\nSi necesitás reprogramar, respondé este mensaje o llamanos. ¡Te esperamos!",
     },
     {
       key: "reminder_24h",
       name: "Recordatorio 24 hs antes",
-      body: "Hola {{paciente}}, te recordamos tu turno de mañana en {{consultorio}}.\n\n🦷 {{tratamiento}}\n📅 {{fecha}} a las {{hora}} hs\n👩‍⚕️ {{odontologo}}\n\n{{preparacion}}\n\nSi no podés asistir, avisanos así ofrecemos el horario a otro paciente. ¡Gracias!",
+      body: "Hola {{paciente}}, te recordamos tu turno de mañana en {{centro}}.\n\n✨ {{tratamiento}}\n📅 {{fecha}} a las {{hora}} hs\n💁‍♀️ {{odontologo}}\n\n{{preparacion}}\n\nSi no podés asistir, avisanos así ofrecemos el horario a otra persona. ¡Gracias!",
     },
     {
       key: "reminder_2h",
       name: "Recordatorio 2 hs antes",
-      body: "Hola {{paciente}}, ¡te esperamos hoy a las {{hora}} hs en {{consultorio}}! 📍 {{direccion}}. Si estás demorado/a, avisanos.",
+      body: "Hola {{paciente}}, ¡te esperamos hoy a las {{hora}} hs en {{centro}}! 📍 {{direccion}}. Si estás demorado/a, avisanos.",
     },
     {
       key: "post_care",
-      name: "Cuidados post-tratamiento",
-      body: "Hola {{paciente}}, gracias por tu visita de hoy. Indicaciones para tu recuperación:\n\n{{cuidados}}\n\nAnte cualquier duda o molestia inusual, escribinos. Que te mejores pronto 🙂",
+      name: "Cuidados post-sesión",
+      body: "Hola {{paciente}}, gracias por tu visita de hoy. Cuidados para tu piel después de la sesión:\n\n{{cuidados}}\n\nAnte cualquier duda o reacción inusual, escribinos 💖",
     },
     {
       key: "recall_6m",
-      name: "Recordatorio de control periódico",
-      body: "Hola {{paciente}} 👋 Pasaron 6 meses desde tu última visita a {{consultorio}}. Te recomendamos agendar un control y limpieza para mantener tu salud bucal. Podés reservar online acá: {{link}}",
+      name: "Recordatorio de próxima sesión",
+      body: "Hola {{paciente}} 👋 Ya pasó un tiempo desde tu última sesión en {{centro}}. Para mantener los resultados de tu depilación definitiva te recomendamos agendar la próxima. Podés reservar online acá: {{link}}",
     },
     {
       key: "staff_new_booking",
@@ -391,7 +462,7 @@ async function main() {
     },
     {
       key: "clinic_cancelled",
-      name: "Cancelación por parte del consultorio",
+      name: "Cancelación por parte del centro",
       body: "Hola {{paciente}}, lamentamos informarte que tuvimos que {{accion}} tu turno del {{fecha}} a las {{hora}} hs ({{tratamiento}}). Disculpá las molestias. Escribinos o reservá un nuevo horario acá: {{link}}",
     },
   ];

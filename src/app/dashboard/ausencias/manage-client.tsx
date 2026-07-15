@@ -54,13 +54,13 @@ export function AusenciasManager({
         </p>
       )}
 
-      {/* ── Feriados del consultorio ── */}
+      {/* ── Feriados del centro ── */}
       <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-1 font-semibold">Feriados del consultorio</h2>
+        <h2 className="mb-1 font-semibold">Feriados del centro</h2>
         <p className="mb-4 text-sm text-neutral-500">
           {isAdmin
-            ? "Días en que el consultorio no atiende a nadie (feriados, cierres)."
-            : "Días en que el consultorio permanece cerrado. Solo administración puede modificarlos."}
+            ? "Días en que el centro no atiende a nadie (feriados, cierres)."
+            : "Días en que el centro permanece cerrado. Solo administración puede modificarlos."}
         </p>
 
         <TimeOffList
@@ -81,13 +81,13 @@ export function AusenciasManager({
         )}
       </section>
 
-      {/* ── Ausencias de odontólogos ── */}
+      {/* ── Ausencias de profesionales ── */}
       <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
         <h2 className="mb-1 font-semibold">
-          {isAdmin ? "Ausencias de odontólogos" : "Mis ausencias"}
+          {isAdmin ? "Ausencias de profesionales" : "Mis ausencias"}
         </h2>
         <p className="mb-4 text-sm text-neutral-500">
-          Vacaciones, francos o licencias. Esos días el odontólogo no recibe turnos.
+          Vacaciones, francos o licencias. Esos días el profesional no recibe turnos.
         </p>
 
         <TimeOffList
@@ -107,7 +107,7 @@ export function AusenciasManager({
           dentistSelector={
             isAdmin
               ? { dentists }
-              : undefined /* el odontólogo se toma de la sesión en el servidor */
+              : undefined /* el profesional se toma de la sesión en el servidor */
           }
           hiddenDentistId={!isAdmin ? (myDentistId ?? undefined) : undefined}
         />
@@ -193,7 +193,7 @@ function TimeOffForm({
     >
       {dentistSelector && (
         <label className="text-neutral-500">
-          Odontólogo
+          Profesional
           <select
             name="dentistId"
             required

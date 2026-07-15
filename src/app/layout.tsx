@@ -5,8 +5,8 @@ import "./globals.css";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Consultorio Sonrisa — Turnos online",
-  description: "Reservá tu turno odontológico online",
+  title: "Alma San Juan — Turnos online",
+  description: "Depilación definitiva láser Soprano ICE. Reservá tu turno online.",
 };
 
 export default function RootLayout({

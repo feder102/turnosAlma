@@ -5,7 +5,7 @@ import { formatMoney, formatDateTime } from "@/lib/format";
 import { PAYMENT_KIND_LABELS, type PaymentKind } from "@/lib/domain";
 import { PayBadge, PageTitle, StatCard } from "../ui";
 
-export const metadata = { title: "Pagos — Consultorio" };
+export const metadata = { title: "Pagos — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function PagosPage() {

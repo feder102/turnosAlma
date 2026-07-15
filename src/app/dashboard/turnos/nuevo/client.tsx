@@ -26,7 +26,7 @@ export function NewAppointmentForm({
   const [pending, startTransition] = useTransition();
 
   const selectedDentist = dentists.find((d) => d.id === dentistId);
-  // Si el odontólogo no tiene sillones asignados, se ofrecen todos como
+  // Si el profesional no tiene cabinas asignados, se ofrecen todos como
   // fallback (evita bloquear el alta por falta de configuración).
   const availableChairs =
     selectedDentist && selectedDentist.chairIds.length > 0
@@ -132,7 +132,7 @@ export function NewAppointmentForm({
           </select>
         </label>
         <label className="text-neutral-500">
-          Odontólogo
+          Profesional
           <select
             name="dentistId"
             required
@@ -148,13 +148,13 @@ export function NewAppointmentForm({
           </select>
         </label>
         <label className="text-neutral-500">
-          Sillón
+          Cabina
           <select
             key={dentistId}
             name="chairId"
             className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-neutral-900"
           >
-            <option value="">(el preferido del odontólogo)</option>
+            <option value="">(el preferido del profesional)</option>
             {availableChairs.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -163,7 +163,7 @@ export function NewAppointmentForm({
           </select>
           {selectedDentist && selectedDentist.chairIds.length === 0 && (
             <span className="mt-1 block text-xs text-amber-600">
-              Este odontólogo no tiene sillones asignados; elegí uno manualmente.
+              Este profesional no tiene cabinas asignados; elegí uno manualmente.
             </span>
           )}
         </label>

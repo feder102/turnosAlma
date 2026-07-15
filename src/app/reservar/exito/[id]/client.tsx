@@ -40,7 +40,7 @@ export function PlanScheduler({
       </p>
       {state === "error" && (
         <p className="mt-2 text-sm text-red-600">
-          No pudimos agendar las sesiones. Coordinalas en el consultorio.
+          No pudimos agendar las sesiones. Coordinalas en el centro.
         </p>
       )}
       <button
@@ -95,7 +95,7 @@ export function PayBox({
     <div className="mt-6 rounded-xl border border-sky-200 bg-sky-50 p-5">
       <p className="font-semibold text-sky-900">Aboná tu turno online</p>
       <p className="mt-1 text-sm text-sky-700">
-        Es opcional: también podés pagar en el consultorio.
+        Es opcional: también podés pagar en el centro.
         {!mpLive && " (Modo de prueba: el pago se simula.)"}
       </p>
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}

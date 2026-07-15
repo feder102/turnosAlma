@@ -34,7 +34,7 @@ async function apptWithContext(id: string) {
     clinic,
     vars: {
       paciente: appt.patient.firstName,
-      consultorio: clinic?.name ?? "",
+      centro: clinic?.name ?? "",
       direccion: clinic?.address ?? "",
       tratamiento: appt.treatment.name,
       fecha: formatDate(appt.startsAt, tz),
@@ -51,14 +51,14 @@ export async function setAppointmentStatus(id: string, status: string) {
   if (!allowed.includes(status)) throw new Error("Estado inválido");
 
   const { appt, vars } = await apptWithContext(id);
-  // El odontólogo solo opera sobre sus propios turnos
+  // El profesional solo opera sobre sus propios turnos
   if (session.role === "DENTIST" && appt.dentistId !== session.dentistId) {
     throw new Error("Sin permiso sobre este turno");
   }
 
   await prisma.appointment.update({
     where: { id },
-    data: { status, ...(status === "CANCELLED" ? { cancelReason: "Cancelado por el consultorio" } : {}) },
+    data: { status, ...(status === "CANCELLED" ? { cancelReason: "Cancelado por el centro" } : {}) },
   });
 
   if (status === "CANCELLED") {
@@ -115,10 +115,10 @@ export async function createManualAppointment(formData: FormData): Promise<Actio
       include: { chairs: { select: { id: true } } },
     });
     const chairId = String(formData.get("chairId") || "") || dentist?.defaultChairId;
-    if (!chairId) return { ok: false, error: "Elegí un sillón" };
-    // Si el odontólogo tiene sillones asignados, solo puede agendarse en uno de ellos.
+    if (!chairId) return { ok: false, error: "Elegí una cabina" };
+    // Si el profesional tiene cabinas asignados, solo puede agendarse en uno de ellos.
     if (dentist && dentist.chairs.length > 0 && !dentist.chairs.some((c) => c.id === chairId)) {
-      return { ok: false, error: "Ese sillón no está asignado a este odontólogo" };
+      return { ok: false, error: "Ese cabina no está asignado a este profesional" };
     }
 
     await createAppointment({
@@ -250,7 +250,7 @@ export async function toggleTreatment(id: string, active: boolean): Promise<void
   revalidatePath("/dashboard/tratamientos");
 }
 
-// ── Sillones (solo admin) ───────────────────────────────────────────────────
+// ── Cabinas (solo admin) ───────────────────────────────────────────────────
 
 export async function upsertChair(formData: FormData): Promise<ActionResult> {
   await requireUser(["ADMIN"]);
@@ -259,12 +259,12 @@ export async function upsertChair(formData: FormData): Promise<ActionResult> {
   if (!name) return { ok: false, error: "El nombre es obligatorio" };
 
   const clinic = await prisma.clinic.findFirst();
-  if (!clinic) return { ok: false, error: "No hay consultorio configurado" };
+  if (!clinic) return { ok: false, error: "No hay centro configurado" };
 
   const duplicate = await prisma.chair.findFirst({
     where: { clinicId: clinic.id, name, ...(id ? { NOT: { id } } : {}) },
   });
-  if (duplicate) return { ok: false, error: "Ya existe un sillón con ese nombre" };
+  if (duplicate) return { ok: false, error: "Ya existe una cabina con ese nombre" };
 
   if (id) {
     await prisma.chair.update({ where: { id }, data: { name } });
@@ -294,7 +294,7 @@ export async function deleteChair(id: string): Promise<ActionResult> {
   await requireUser(["ADMIN"]);
 
   const totalChairs = await prisma.chair.count();
-  if (totalChairs <= 1) return { ok: false, error: "Debe existir al menos un sillón" };
+  if (totalChairs <= 1) return { ok: false, error: "Debe existir al menos una cabina" };
 
   const appointmentsCount = await prisma.appointment.count({ where: { chairId: id } });
   if (appointmentsCount > 0) {
@@ -303,7 +303,7 @@ export async function deleteChair(id: string): Promise<ActionResult> {
 
   const assignedToDentist = await prisma.dentist.count({ where: { chairs: { some: { id } } } });
   if (assignedToDentist > 0) {
-    return { ok: false, error: "Está asignado a un odontólogo. Quitáselo antes de eliminar." };
+    return { ok: false, error: "Está asignado a un profesional. Quitáselo antes de eliminar." };
   }
 
   await prisma.chair.delete({ where: { id } });
@@ -425,7 +425,7 @@ export async function togglePatient(id: string, active: boolean): Promise<void> 
   revalidatePath("/dashboard/pacientes");
 }
 
-// ── Odontólogos (solo admin) ────────────────────────────────────────────────
+// ── Profesionales (solo admin) ────────────────────────────────────────────────
 
 // Límite de la foto de perfil ya redimensionada en el cliente (~data URL).
 const MAX_PHOTO_CHARS = 700_000; // ~500 KB de imagen
@@ -470,10 +470,10 @@ export async function upsertDentist(formData: FormData): Promise<ActionResult> {
   }
   if (chairIds.length > 0) {
     const found = await prisma.chair.count({ where: { id: { in: chairIds } } });
-    if (found !== chairIds.length) return { ok: false, error: "Alguno de los sillones elegidos no existe" };
+    if (found !== chairIds.length) return { ok: false, error: "Alguna de las cabinas elegidas no existe" };
   }
   if (defaultChairId && !chairIds.includes(defaultChairId)) {
-    return { ok: false, error: "El sillón preferido debe ser uno de los asignados" };
+    return { ok: false, error: "El cabina preferido debe ser uno de los asignados" };
   }
 
   const data = {
@@ -494,17 +494,17 @@ export async function upsertDentist(formData: FormData): Promise<ActionResult> {
 
   try {
     if (id) {
-      // `set` reemplaza la lista completa de sillones asignados por la nueva.
+      // `set` reemplaza la lista completa de cabinas asignados por la nueva.
       await prisma.dentist.update({ where: { id }, data: { ...data, chairs: { set: chairRefs } } });
     } else {
       await prisma.dentist.create({ data: { ...data, chairs: { connect: chairRefs } } });
     }
   } catch (err) {
     console.error(err);
-    return { ok: false, error: "No se pudo guardar el odontólogo" };
+    return { ok: false, error: "No se pudo guardar el profesional" };
   }
 
-  // El nombre del odontólogo aparece en toda la app: revalidar el layout.
+  // El nombre del profesional aparece en toda la app: revalidar el layout.
   revalidatePath("/dashboard", "layout");
   return { ok: true };
 }
@@ -527,8 +527,8 @@ export async function toggleDentist(id: string, active: boolean): Promise<Action
   return { ok: true };
 }
 
-// Gestión de la contraseña de acceso de un odontólogo. Solo el admin.
-// Si el odontólogo todavía no tiene cuenta de acceso, la crea usando el email
+// Gestión de la contraseña de acceso de un profesional. Solo el admin.
+// Si el profesional todavía no tiene cuenta de acceso, la crea usando el email
 // indicado (por defecto, su email de contacto).
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const MIN_PASSWORD = 8;
@@ -548,7 +548,7 @@ export async function setDentistPassword(formData: FormData): Promise<ActionResu
     where: { id: dentistId },
     include: { user: true },
   });
-  if (!dentist) return { ok: false, error: "Odontólogo no encontrado" };
+  if (!dentist) return { ok: false, error: "Profesional no encontrado" };
 
   const passwordHash = await hashPassword(password);
 
@@ -603,8 +603,8 @@ export async function deleteDentist(id: string): Promise<ActionResult> {
 }
 
 // ── Ausencias y feriados ────────────────────────────────────────────────────
-// Feriados del consultorio (dentistId null) los administra el admin.
-// Cada odontólogo administra sus propias ausencias desde su perfil.
+// Feriados del centro (dentistId null) los administra el admin.
+// Cada profesional administra sus propias ausencias desde su perfil.
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -622,18 +622,18 @@ export async function upsertTimeOff(formData: FormData): Promise<ActionResult> {
     return { ok: false, error: "La fecha de fin no puede ser anterior al inicio" };
   }
 
-  // Un odontólogo solo puede cargar sus propias ausencias; nunca feriados.
+  // Un profesional solo puede cargar sus propias ausencias; nunca feriados.
   let dentistId: string | null;
   if (session.role === "DENTIST") {
     if (!session.dentistId) {
-      return { ok: false, error: "Tu usuario no está vinculado a un odontólogo" };
+      return { ok: false, error: "Tu usuario no está vinculado a un profesional" };
     }
     dentistId = session.dentistId;
   } else {
     dentistId = String(formData.get("dentistId") || "").trim() || null;
     if (dentistId) {
       const exists = await prisma.dentist.count({ where: { id: dentistId } });
-      if (!exists) return { ok: false, error: "Odontólogo inexistente" };
+      if (!exists) return { ok: false, error: "Profesional inexistente" };
     }
   }
 
@@ -655,25 +655,25 @@ export async function deleteTimeOff(id: string): Promise<ActionResult> {
 }
 
 // ── Horarios de atención ────────────────────────────────────────────────────
-// Cada odontólogo carga sus bloques semanales (día + franja + sillón opcional).
-// El admin puede gestionar los horarios de cualquier odontólogo.
+// Cada profesional carga sus bloques semanales (día + franja + cabina opcional).
+// El admin puede gestionar los horarios de cualquier profesional.
 
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-// Resuelve sobre qué odontólogo opera la acción según el rol de la sesión.
+// Resuelve sobre qué profesional opera la acción según el rol de la sesión.
 async function resolveScheduleDentistId(
   session: { role: string; dentistId: string | null },
   formDentistId: string
 ): Promise<{ dentistId?: string; error?: string }> {
   if (session.role === "DENTIST") {
     if (!session.dentistId) {
-      return { error: "Tu usuario no está vinculado a un odontólogo" };
+      return { error: "Tu usuario no está vinculado a un profesional" };
     }
     return { dentistId: session.dentistId };
   }
-  if (!formDentistId) return { error: "Elegí un odontólogo" };
+  if (!formDentistId) return { error: "Elegí un profesional" };
   const exists = await prisma.dentist.count({ where: { id: formDentistId } });
-  if (!exists) return { error: "Odontólogo inexistente" };
+  if (!exists) return { error: "Profesional inexistente" };
   return { dentistId: formDentistId };
 }
 
@@ -702,14 +702,14 @@ export async function addScheduleBlock(formData: FormData): Promise<ActionResult
     return { ok: false, error: "La hora de fin debe ser posterior a la de inicio" };
   }
 
-  // El sillón (opcional) tiene que estar asignado al odontólogo y activo.
+  // El cabina (opcional) tiene que estar asignado al profesional y activo.
   if (chairId) {
     const chair = await prisma.chair.findFirst({
       where: { id: chairId, active: true, dentists: { some: { id: dentistId } } },
       select: { id: true },
     });
     if (!chair) {
-      return { ok: false, error: "El sillón no está asignado a este odontólogo" };
+      return { ok: false, error: "El cabina no está asignado a este profesional" };
     }
   }
 

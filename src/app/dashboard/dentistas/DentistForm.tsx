@@ -55,7 +55,7 @@ export function DentistForm({
     setSelectedChairIds((prev) =>
       checked ? [...prev, chairId] : prev.filter((id) => id !== chairId)
     );
-    // El sillón preferido tiene que seguir siendo uno de los asignados.
+    // El cabina preferido tiene que seguir siendo uno de los asignados.
     if (!checked && defaultChairId === chairId) setDefaultChairId("");
   }
 
@@ -85,7 +85,7 @@ export function DentistForm({
   }
 
   const initials =
-    `${dentist?.firstName?.[0] ?? ""}${dentist?.lastName?.[0] ?? ""}`.toUpperCase() || "🦷";
+    `${dentist?.firstName?.[0] ?? ""}${dentist?.lastName?.[0] ?? ""}`.toUpperCase() || "✨";
 
   return (
     <form action={submit} className="flex max-w-2xl flex-col gap-5">
@@ -206,9 +206,9 @@ export function DentistForm({
       <section className="rounded-xl border border-neutral-200 bg-white p-5 text-sm shadow-sm">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="text-neutral-500">
-            Sillones asignados
+            Cabinas asignados
             <p className="mb-1 text-xs text-neutral-400">
-              Puede atender en más de uno (incluso de otros consultorios).
+              Puede atender en más de uno (incluso de otros centros).
             </p>
             <div className="flex flex-col gap-1.5">
               {chairs.map((c) => (
@@ -225,13 +225,13 @@ export function DentistForm({
                 </label>
               ))}
               {chairs.length === 0 && (
-                <p className="text-xs text-neutral-400">No hay sillones activos para asignar.</p>
+                <p className="text-xs text-neutral-400">No hay cabinas activos para asignar.</p>
               )}
             </div>
           </div>
           <div className="flex flex-col gap-3">
             <label className="text-neutral-500">
-              Sillón preferido
+              Cabina preferido
               <select
                 name="defaultChairId"
                 value={defaultChairId}
@@ -276,7 +276,7 @@ export function DentistForm({
           disabled={pending}
           className="rounded-lg bg-sky-600 px-6 py-3 font-semibold text-white transition hover:bg-sky-700 disabled:opacity-50"
         >
-          {pending ? "Guardando…" : dentist ? "Guardar cambios" : "Crear odontólogo"}
+          {pending ? "Guardando…" : dentist ? "Guardar cambios" : "Crear profesional"}
         </button>
         <Link href="/dashboard/dentistas" className="text-sm text-neutral-500 hover:underline">
           Cancelar

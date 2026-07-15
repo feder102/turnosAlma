@@ -1,8 +1,21 @@
-# 🦷 Turnero — Sistema de turnos para consultorio odontológico
+# ✨ Alma San Juan — Turnero de depilación definitiva láser
 
-Sistema completo de turnos online para un consultorio con varios odontólogos y sillones:
+Sistema completo de turnos online para **Alma San Juan**, único centro oficial
+**Soprano ICE** en San Juan ([@almasopranoicesj](https://www.instagram.com/almasopranoicesj/)):
 reservas públicas, dashboard privado con roles, pagos con Mercado Pago, notificaciones por
-WhatsApp y planes de tratamiento de varias sesiones (ortodoncia, endodoncia, etc.).
+WhatsApp y planes de tratamiento de varias sesiones (la depilación láser requiere 8-10
+sesiones por zona).
+
+Adaptación de [odontoTurnos](https://github.com/feder102/odontoTurnos) al rubro de
+depilación láser. El modelo de datos conserva los nombres originales (`Dentist`, `Chair`,
+`Patient`…); lo que cambia es la capa visible: profesionales, cabinas y servicios por zona.
+
+> **Nota:** los nombres de las profesionales del seed son *placeholders* — el Instagram
+> del centro no publica los nombres del staff. Reemplazalos por los reales en
+> `prisma/seed.ts` o desde Dashboard → Profesionales.
+
+**Datos del centro** (de Instagram): Paula Albarracín de Sarmiento 1085 (Sur), Capital,
+San Juan · WhatsApp 264 419-1588 · Lunes a sábado de 7:30 a 22:00.
 
 **Stack:** Next.js (App Router) + TypeScript + Tailwind CSS + Prisma 7 + PostgreSQL (Neon, dev y prod).
 
@@ -24,23 +37,23 @@ npm run dev              # http://localhost:3000
 
 | Rol | Email | Contraseña |
 |---|---|---|
-| Admin | `admin@sonrisa.com` | `admin123` |
-| Recepción | `recepcion@sonrisa.com` | `recepcion123` |
-| Odontóloga (Dra. Gómez) | `lgomez@sonrisa.com` | `dentista123` |
-| Odontólogo (Dr. Ruiz) | `mruiz@sonrisa.com` | `dentista123` |
+| Admin | `admin@almasanjuan.com` | `admin123` |
+| Recepción | `recepcion@almasanjuan.com` | `recepcion123` |
+| Profesional (Lic. Castro) | `vcastro@almasanjuan.com` | `profesional123` |
+| Profesional (Téc. Morales) | `jmorales@almasanjuan.com` | `profesional123` |
 
 ### Qué probar
 
-- **`/reservar`** — flujo público: tratamiento → profesional → fecha/hora (solo horarios
-  realmente libres) → datos del paciente (probá reconocerte con `+5491155550001`) →
-  confirmación. Con un tratamiento multi-sesión (ortodoncia, endodoncia) la página de
-  éxito ofrece agendar las sesiones siguientes.
-- **`/dashboard`** — vista general, agenda semanal por odontólogo/sillón, ficha de
-  paciente con historia clínica y progreso de planes, gestión de turnos, pagos,
-  plantillas de WhatsApp, ocupación de sillones y reportes exportables.
+- **`/reservar`** — flujo público: servicio → profesional → fecha/hora (solo horarios
+  realmente libres) → datos de la clienta (probá reconocerte con `+5492645550001`) →
+  confirmación. Con un servicio multi-sesión (piernas completas, combo mujer) la página
+  de éxito ofrece agendar las sesiones siguientes.
+- **`/dashboard`** — vista general, agenda semanal por profesional/cabina, ficha de
+  paciente con historial de sesiones y progreso de planes, gestión de turnos, pagos,
+  plantillas de WhatsApp, ocupación de cabinas y reportes exportables.
 - **Recordatorios** — `curl http://localhost:3000/api/jobs/reminders` dispara los
-  recordatorios de 24 hs / 2 hs y el recall de 6 meses (en modo simulado se ven en la
-  consola y en Dashboard → Mensajes).
+  recordatorios de 24 hs / 2 hs y el recall (en modo simulado se ven en la consola y en
+  Dashboard → Mensajes).
 
 ---
 
@@ -48,34 +61,38 @@ npm run dev              # http://localhost:3000
 
 ### Modelo de datos (Prisma)
 
-- **`Clinic` / `Chair`**: un consultorio con N sillones. Cada turno ocupa *un odontólogo
-  y un sillón*: ambos se validan contra dobles reservas.
+- **`Clinic` / `Chair`**: un centro con N cabinas (equipos Soprano ICE). Cada turno ocupa
+  *una profesional y una cabina*: ambas se validan contra dobles reservas.
 - **`Dentist` + `DentistSchedule`**: horario propio por día de semana, que se intersecta
-  con el horario del consultorio al calcular disponibilidad.
-- **`Treatment`**: duración, precio particular y copago de obra social
-  (`insurancePriceCents`, null = no cubierto), seña opcional (`depositCents`) y textos
-  configurables de preparación previa y cuidados post-tratamiento (usados por WhatsApp).
-- **Tratamientos multi-sesión**: `Treatment.multiSession` + `defaultSessions` +
-  `sessionIntervalDays` definen la *plantilla*; **`TreatmentPlan`** es la *instancia*
-  para un paciente concreto, y cada `Appointment` del plan lleva `sessionNumber`.
-  El progreso ("sesión 3 de 4") se calcula contando sesiones `COMPLETED` del plan, así
-  nunca queda desincronizado. Cobro por sesión o total por adelantado (`billingMode`).
-- **`ClinicalNote`**: 1:1 con el turno (qué se hizo + próximos pasos), indexada por
-  paciente → la ficha del paciente es la suma cronológica de sus notas.
+  con el horario del centro al calcular disponibilidad. (El modelo conserva el nombre
+  `Dentist` del proyecto original; en la UI se muestra siempre "profesional".)
+- **`Treatment`**: duración, precio, seña opcional (`depositCents`) y textos configurables
+  de preparación previa (rasurado, no exposición solar) y cuidados post-sesión (usados
+  por WhatsApp). `insurancePriceCents` existe en el esquema pero no se usa (no hay obra
+  social en este rubro).
+- **Servicios multi-sesión**: `Treatment.multiSession` + `defaultSessions` +
+  `sessionIntervalDays` definen la *plantilla* (p. ej. 8 sesiones cada 30 días);
+  **`TreatmentPlan`** es la *instancia* para una clienta concreta, y cada `Appointment`
+  del plan lleva `sessionNumber`. El progreso ("sesión 3 de 8") se calcula contando
+  sesiones `COMPLETED` del plan, así nunca queda desincronizado. Cobro por sesión o
+  total por adelantado (`billingMode`).
+- **`ClinicalNote`**: 1:1 con el turno (parámetros usados, tolerancia, próximos pasos),
+  indexada por paciente → la ficha es la suma cronológica de sus notas.
 - **Estados como `String`**: se mantienen como string validado (uniones de TypeScript +
   Zod en `src/lib/domain.ts` y los endpoints) en lugar de enums nativos de Prisma, por
   simplicidad — se pueden promover a enums nativos si se quiere.
 - **Dinero en centavos (`Int`)** para evitar errores de punto flotante.
-- **Fechas en UTC** en la base; la zona horaria del consultorio (`Clinic.timezone`) se
-  aplica solo al mostrar y al convertir "fecha + hora local" → UTC (`src/lib/format.ts`).
+- **Fechas en UTC** en la base; la zona horaria del centro (`Clinic.timezone`,
+  `America/Argentina/San_Juan`) se aplica solo al mostrar y al convertir
+  "fecha + hora local" → UTC (`src/lib/format.ts`).
 
 ### Disponibilidad y anti doble-reserva
 
-`src/lib/availability.ts` genera slots de 15 min cruzando: horario del consultorio ∩
-horario del odontólogo, menos turnos existentes del odontólogo, y asignando un sillón
-libre (prefiere el sillón por defecto del profesional). Al confirmar, la creación corre
-dentro de una transacción que re-chequea conflictos (`findConflict`) por odontólogo *y*
-por sillón — la doble validación evita la carrera entre ver el slot y reservarlo.
+`src/lib/availability.ts` genera slots de 15 min cruzando: horario del centro ∩
+horario de la profesional, menos turnos existentes de la profesional, y asignando una
+cabina libre (prefiere la cabina por defecto de la profesional). Al confirmar, la creación
+corre dentro de una transacción que re-chequea conflictos (`findConflict`) por profesional
+*y* por cabina — la doble validación evita la carrera entre ver el slot y reservarlo.
 
 ### Pagos (Mercado Pago — Checkout Bricks)
 
@@ -83,10 +100,9 @@ Se eligió **Payment Brick** (Checkout Bricks): el formulario de pago vive embeb
 nuestra página `/pagar/[id]`, MP maneja 3DS/antifraude y la tokenización de tarjetas
 (PCI simplificado). `src/lib/payments.ts`:
 
-- Pago completo o **seña** (si el tratamiento define `depositCents`), y **plan completo
+- Pago completo o **seña** (si el servicio define `depositCents`), y **plan completo
   por adelantado** para planes multi-sesión.
-- El importe siempre sale del turno (nunca del navegador), que ya tiene aplicado el
-  **copago de obra social**.
+- El importe siempre sale del turno (nunca del navegador).
 - Medios de pago: tarjetas de crédito/débito y **cuenta de Mercado Pago** (Wallet, vía
   preferencia creada en el backend).
 - Webhook (`/api/payments/webhook`) valida la firma `x-signature`, consulta el pago a la
@@ -100,8 +116,8 @@ nuestra página `/pagar/[id]`, MP maneja 3DS/antifraude y la tokenización de ta
 `src/lib/messaging.ts` con dos proveedores: `simulated` (default: consola + tabla
 `MessageLog`) y `twilio`. Las **plantillas viven en la base** (`MessageTemplate`) y se
 editan desde Dashboard → Mensajes. Mensajes: confirmación, recordatorio 24 hs (con
-preparación según tratamiento), recordatorio 2-3 hs, cuidados post-tratamiento al
-completar el turno, recall a los 6 meses, avisos al staff y cancelación/reprogramación.
+preparación según el servicio), recordatorio 2-3 hs, cuidados post-sesión al completar
+el turno, recall para la próxima sesión, avisos al staff y cancelación/reprogramación.
 Los recordatorios los dispara `/api/jobs/reminders`, con deduplicación vía `MessageLog`.
 **Nota:** el cron automático está deshabilitado (ver TODO en el archivo) porque Vercel
 Hobby no permite crons con frecuencia mayor a 1 vez/día; se puede llamar manualmente o
@@ -109,10 +125,10 @@ reactivar el cron con un plan Pro.
 
 ### Roles
 
-- **ADMIN**: todo (incluye tratamientos y reportes).
+- **ADMIN**: todo (incluye servicios y reportes).
 - **RECEPTION**: agenda, turnos (crear/reprogramar/cancelar/cobrar), pacientes, pagos,
-  mensajes, sillones.
-- **DENTIST**: su propia agenda, sus turnos y las fichas clínicas de sus pacientes.
+  mensajes, cabinas.
+- **DENTIST** (profesional): su propia agenda, sus turnos y las fichas de sus clientas.
 
 Sesión: JWT firmado (jose) en cookie httpOnly; cada página y server action re-valida rol.
 
@@ -168,33 +184,35 @@ los incluyen) y verificar restauración periódicamente.
 
 ---
 
-## Checklist antes de usar con pacientes reales
+## Checklist antes de usar con clientas reales
 
 **Seguridad**
 - [ ] `AUTH_SECRET` fuerte y único; HTTPS en todo el dominio (Vercel lo da por defecto).
 - [ ] Cambiar TODAS las contraseñas del seed (o borrar los usuarios seed y crear reales).
+- [ ] Cargar las profesionales reales (los nombres del seed son placeholders).
 - [ ] Revisar que ninguna cuenta tenga rol de más (principio de mínimo privilegio).
 - [ ] Rate limiting / captcha en `/api/public/*` si hay abuso (Vercel WAF o middleware).
 
 **Permisos**
-- [ ] Probar con un usuario DENTIST que solo ve su agenda y sus pacientes.
-- [ ] Probar con RECEPTION que no accede a tratamientos ni reportes.
+- [ ] Probar con un usuario DENTIST (profesional) que solo ve su agenda y sus clientas.
+- [ ] Probar con RECEPTION que no accede a servicios ni reportes.
 
 **Pagos**
 - [ ] Webhook de Mercado Pago verificado (notificación de prueba desde el panel de MP).
 - [ ] Flujo de reembolso probado con un pago de test.
+- [ ] Precios reales cargados (los del seed son estimativos).
 
-**Datos de salud (privacidad)**
+**Datos personales (privacidad)**
 - [ ] Backups automáticos activos y restauración probada.
 - [ ] Acceso a la base restringido (IP allowlist / conexión SSL obligatoria).
-- [ ] Las fichas clínicas solo son visibles para roles clínicos (ya implementado; verificar).
-- [ ] Cumplimiento local: en Argentina, Ley 25.326 de Protección de Datos Personales y
-      Ley 26.529 de Derechos del Paciente (consentimiento, acceso a la historia clínica,
-      plazo de conservación). Consultar con un profesional legal.
-- [ ] Política de retención y borrado de datos de pacientes definida.
+- [ ] Las fichas solo son visibles para roles habilitados (ya implementado; verificar).
+- [ ] Cumplimiento local: en Argentina, Ley 25.326 de Protección de Datos Personales.
+      Si se registran datos de salud (fototipo, medicación, embarazo), tratarlos como
+      datos sensibles. Consultar con un profesional legal.
+- [ ] Política de retención y borrado de datos de clientas definida.
 
 **Operación**
 - [ ] Cron de recordatorios corriendo (revisar logs de Vercel).
 - [ ] Plantillas de WhatsApp aprobadas en Meta antes de activar `twilio`.
 - [ ] Monitoreo de errores (Sentry o similar) y alertas.
-- [ ] Zona horaria del consultorio correcta en la tabla `Clinic`.
+- [ ] Zona horaria del centro correcta en la tabla `Clinic` (`America/Argentina/San_Juan`).

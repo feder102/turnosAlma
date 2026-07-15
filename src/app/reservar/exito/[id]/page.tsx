@@ -53,7 +53,7 @@ export default async function ExitoPage({
       )}
       {pago === "cancelado" && (
         <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          El pago quedó pendiente. Podés intentarlo de nuevo abajo o abonar en el consultorio.
+          El pago quedó pendiente. Podés intentarlo de nuevo abajo o abonar en el centro.
         </div>
       )}
 
@@ -108,7 +108,7 @@ export default async function ExitoPage({
 
       <p className="mt-8 text-center text-sm text-neutral-500">
         ¿Necesitás cambiar el turno? Escribinos por WhatsApp o llamanos al{" "}
-        {clinic?.phone ?? "consultorio"}.
+        {clinic?.phone ?? "centro"}.
       </p>
 
       <div className="mt-6 text-center">

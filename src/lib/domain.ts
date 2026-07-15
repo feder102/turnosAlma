@@ -53,25 +53,25 @@ export const PAYMENT_STATUS_COLORS: Record<PaymentStatus, string> = {
 
 export const SPECIALTIES = [
   "GENERAL",
-  "ORTODONCIA",
-  "ENDODONCIA",
-  "IMPLANTES",
-  "ODONTOPEDIATRIA",
-  "CIRUGIA",
+  "LASER_CORPORAL",
+  "LASER_FACIAL",
+  "LASER_MASCULINO",
+  "ELECTROLISIS",
+  "COSMETOLOGIA",
 ] as const;
 export type Specialty = (typeof SPECIALTIES)[number];
 
 export const SPECIALTY_LABELS: Record<Specialty, string> = {
-  GENERAL: "Odontología general",
-  ORTODONCIA: "Ortodoncia",
-  ENDODONCIA: "Endodoncia",
-  IMPLANTES: "Implantes",
-  ODONTOPEDIATRIA: "Odontopediatría",
-  CIRUGIA: "Cirugía",
+  GENERAL: "Depilación láser general",
+  LASER_CORPORAL: "Láser corporal",
+  LASER_FACIAL: "Láser facial",
+  LASER_MASCULINO: "Depilación masculina",
+  ELECTROLISIS: "Electrólisis",
+  COSMETOLOGIA: "Cosmetología",
 };
 
-// Prefijo profesional del odontólogo. "" = sin prefijo.
-export const DENTIST_TITLES = ["", "Dr.", "Dra.", "Od."] as const;
+// Prefijo de la profesional. "" = sin prefijo.
+export const DENTIST_TITLES = ["", "Lic.", "Téc.", "Dra.", "Dr."] as const;
 export type DentistTitle = (typeof DENTIST_TITLES)[number];
 
 // Nombre completo mostrado en toda la app. Se guarda denormalizado en
@@ -92,7 +92,7 @@ export type Role = (typeof ROLES)[number];
 
 export const ROLE_LABELS: Record<Role, string> = {
   ADMIN: "Administración",
-  DENTIST: "Odontólogo/a",
+  DENTIST: "Profesional",
   RECEPTION: "Recepción",
 };
 

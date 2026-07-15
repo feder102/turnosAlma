@@ -4,7 +4,7 @@ import { formatMoney } from "@/lib/format";
 import { PageTitle } from "../ui";
 import { upsertTreatment, toggleTreatment } from "../actions";
 
-export const metadata = { title: "Tratamientos — Consultorio" };
+export const metadata = { title: "Tratamientos — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function TratamientosPage() {

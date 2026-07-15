@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { formatDateTime, formatMoney } from "@/lib/format";
 import { StatusBadge, PayBadge, PageTitle } from "../ui";
 
-export const metadata = { title: "Turnos — Consultorio" };
+export const metadata = { title: "Turnos — Centro" };
 export const dynamic = "force-dynamic";
 
 const FILTERS = [
@@ -85,7 +85,7 @@ export default async function TurnosPage({
               <th className="px-4 py-3">Fecha</th>
               <th className="px-4 py-3">Paciente</th>
               <th className="px-4 py-3">Tratamiento</th>
-              <th className="px-4 py-3">Odontólogo</th>
+              <th className="px-4 py-3">Profesional</th>
               <th className="px-4 py-3">Estado</th>
               <th className="px-4 py-3">Pago</th>
               <th className="px-4 py-3 text-right">Importe</th>

@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { PageTitle } from "../../../ui";
 import { PatientForm } from "../../PatientForm";
 
-export const metadata = { title: "Editar paciente — Consultorio" };
+export const metadata = { title: "Editar paciente — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function EditarPacientePage({

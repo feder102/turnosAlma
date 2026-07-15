@@ -1,7 +1,7 @@
 "use client";
 
 // Wizard público de reservas, mobile-first:
-// 1. tratamiento → 2. odontólogo → 3. fecha y hora → 4. datos → 5. confirmar
+// 1. tratamiento → 2. profesional → 3. fecha y hora → 4. datos → 5. confirmar
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -338,7 +338,7 @@ export default function BookingWizard() {
       {step === 3 && (
         <div className="flex flex-col gap-4">
           <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
-            <p className="font-semibold">¿Ya sos paciente del consultorio?</p>
+            <p className="font-semibold">¿Ya sos paciente del centro?</p>
             <p className="mt-1 text-sm text-neutral-500">
               Ingresá tu teléfono o email y no te pedimos el resto.
             </p>
@@ -408,20 +408,8 @@ export default function BookingWizard() {
                     className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-neutral-900"
                   />
                 </label>
-                <input
-                  placeholder="Obra social (si tenés)"
-                  value={form.insuranceProvider}
-                  onChange={(e) => setForm({ ...form, insuranceProvider: e.target.value })}
-                  className="rounded-lg border border-neutral-300 px-3 py-2.5"
-                />
-                <input
-                  placeholder="N° de afiliado"
-                  value={form.insuranceNumber}
-                  onChange={(e) => setForm({ ...form, insuranceNumber: e.target.value })}
-                  className="rounded-lg border border-neutral-300 px-3 py-2.5"
-                />
                 <textarea
-                  placeholder="Alergias o datos médicos que debamos saber"
+                  placeholder="Datos que debamos saber (piel sensible, medicación, embarazo, tatuajes en la zona)"
                   value={form.medicalNotes}
                   onChange={(e) => setForm({ ...form, medicalNotes: e.target.value })}
                   rows={2}

@@ -1,6 +1,6 @@
-// Cálculo de horarios disponibles: cruza horario del consultorio, horario del
-// odontólogo, turnos ya ocupados (por odontólogo Y por sillón) y disponibilidad
-// de sillones. Un turno bloquea a su odontólogo y a su sillón.
+// Cálculo de horarios disponibles: cruza horario del centro, horario del
+// profesional, turnos ya ocupados (por profesional Y por cabina) y disponibilidad
+// de cabinas. Un turno bloquea a su profesional y a su cabina.
 
 import { prisma } from "./prisma";
 import type { OpeningHour } from "./domain";
@@ -10,7 +10,7 @@ const SLOT_STEP_MIN = 15;
 const ACTIVE_STATUSES = ["PENDING", "CONFIRMED", "COMPLETED"];
 
 export type Slot = {
-  time: string; // "09:30" hora del consultorio
+  time: string; // "09:30" hora del centro
   startsAt: string; // ISO UTC
   dentistId: string;
   chairId: string;
@@ -22,8 +22,8 @@ function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number) {
   return aStart < bEnd && bStart < aEnd;
 }
 
-// Días no laborables vigentes en una fecha ("YYYY-MM-DD" en zona del consultorio).
-// Incluye feriados del consultorio (dentistId null) y ausencias de odontólogos.
+// Días no laborables vigentes en una fecha ("YYYY-MM-DD" en zona del centro).
+// Incluye feriados del centro (dentistId null) y ausencias de profesionales.
 export async function getTimeOffForDate(dateStr: string) {
   return prisma.timeOff.findMany({
     where: { startDate: { lte: dateStr }, endDate: { gte: dateStr } },
@@ -31,17 +31,17 @@ export async function getTimeOffForDate(dateStr: string) {
   });
 }
 
-// ¿Está bloqueada la fecha para un odontólogo? Devuelve el motivo o null.
-// Contempla feriados del consultorio y ausencias del propio odontólogo.
+// ¿Está bloqueada la fecha para un profesional? Devuelve el motivo o null.
+// Contempla feriados del centro y ausencias del propio profesional.
 export async function findDayOffConflict(params: {
   dentistId: string;
   dateStr: string;
 }): Promise<string | null> {
   const blocks = await getTimeOffForDate(params.dateStr);
   const holiday = blocks.find((b) => b.dentistId === null);
-  if (holiday) return `El consultorio no atiende ese día${holiday.reason ? ` (${holiday.reason})` : " (feriado)"}.`;
+  if (holiday) return `El centro no atiende ese día${holiday.reason ? ` (${holiday.reason})` : " (feriado)"}.`;
   const off = blocks.find((b) => b.dentistId === params.dentistId);
-  if (off) return `El odontólogo no atiende ese día${off.reason ? ` (${off.reason})` : " (ausencia)"}.`;
+  if (off) return `El profesional no atiende ese día${off.reason ? ` (${off.reason})` : " (ausencia)"}.`;
   return null;
 }
 
@@ -57,7 +57,7 @@ function intersect(a: Interval[], b: Interval[]): Interval[] {
 }
 
 export async function getAvailableSlots(params: {
-  dateStr: string; // "YYYY-MM-DD" en zona del consultorio
+  dateStr: string; // "YYYY-MM-DD" en zona del centro
   treatmentId: string;
   dentistId?: string | null; // null/undefined = cualquiera disponible
   excludeAppointmentId?: string; // para reprogramar sin que el propio turno bloquee
@@ -78,9 +78,9 @@ export async function getAvailableSlots(params: {
     .map((h) => ({ start: timeToMinutes(h.open), end: timeToMinutes(h.close) }));
   if (opening.length === 0) return [];
 
-  // Feriados del consultorio y ausencias de odontólogos para esta fecha.
+  // Feriados del centro y ausencias de profesionales para esta fecha.
   const timeOff = await getTimeOffForDate(dateStr);
-  if (timeOff.some((t) => t.dentistId === null)) return []; // consultorio cerrado
+  if (timeOff.some((t) => t.dentistId === null)) return []; // centro cerrado
   const blockedDentistIds = new Set(
     timeOff.map((t) => t.dentistId).filter((id): id is string => id !== null)
   );
@@ -98,7 +98,7 @@ export async function getAvailableSlots(params: {
     })
   ).filter((d) => !blockedDentistIds.has(d.id));
 
-  // Turnos del día (con margen) que ocupan odontólogo o sillón
+  // Turnos del día (con margen) que ocupan profesional o cabina
   const dayStart = zonedToUtc(dateStr, "00:00", tz);
   const dayEnd = new Date(dayStart.getTime() + 36 * 3600 * 1000);
   const appointments = await prisma.appointment.findMany({
@@ -117,14 +117,14 @@ export async function getAvailableSlots(params: {
   const seenTimes = new Set<string>();
 
   for (const dentist of dentists) {
-    // Cada bloque horario se procesa por separado: si fija un sillón, los
-    // slots de ese bloque solo pueden usar ese sillón.
+    // Cada bloque horario se procesa por separado: si fija una cabina, los
+    // slots de ese bloque solo pueden usar esa cabina.
     for (const block of dentist.schedules) {
       const windows = intersect(opening, [
         { start: timeToMinutes(block.startTime), end: timeToMinutes(block.endTime) },
       ]);
 
-      // Sillones candidatos para este bloque. Con sillón fijado (y activo) se
+      // Cabinas candidatos para este bloque. Con cabina fijado (y activo) se
       // usa solo ese; si no, el por defecto y después el resto de los asignados.
       const chairIds =
         block.chair && block.chair.active
@@ -133,18 +133,18 @@ export async function getAvailableSlots(params: {
               ...(dentist.defaultChairId ? [dentist.defaultChairId] : []),
               ...dentist.chairs.map((c) => c.id).filter((id) => id !== dentist.defaultChairId),
             ];
-      if (chairIds.length === 0) continue; // sin sillones asignados: no se puede agendar
+      if (chairIds.length === 0) continue; // sin cabinas asignados: no se puede agendar
 
       for (const w of windows) {
         for (let t = w.start; t + duration <= w.end; t += SLOT_STEP_MIN) {
           const time = minutesToTime(t);
-          if (dentistId == null && seenTimes.has(time)) continue; // ya cubierto por otro odontólogo
+          if (dentistId == null && seenTimes.has(time)) continue; // ya cubierto por otro profesional
 
           const startsAt = zonedToUtc(dateStr, time, tz);
           const endsAt = new Date(startsAt.getTime() + duration * 60000);
           if (startsAt.getTime() <= now) continue;
 
-          // ¿El odontólogo está libre?
+          // ¿El profesional está libre?
           const dentistBusy = appointments.some(
             (a) =>
               a.dentistId === dentist.id &&
@@ -200,6 +200,6 @@ export async function findConflict(params: {
   });
   if (!conflict) return null;
   return conflict.dentistId === dentistId
-    ? "El odontólogo ya tiene un turno en ese horario."
-    : "El sillón ya está ocupado en ese horario.";
+    ? "El profesional ya tiene un turno en ese horario."
+    : "El cabina ya está ocupado en ese horario.";
 }

@@ -6,11 +6,11 @@ import { PageTitle } from "../ui";
 import { AutoRefresh } from "./client";
 import { ChairManager } from "./manage-client";
 
-export const metadata = { title: "Sillones — Consultorio" };
+export const metadata = { title: "Cabinas — Centro" };
 export const dynamic = "force-dynamic";
 
-// Ocupación de sillones en tiempo real (se refresca solo cada 30 segundos).
-// El ABM (alta/baja/modificación) de sillones sólo lo puede operar el administrador.
+// Ocupación de cabinas en tiempo real (se refresca solo cada 30 segundos).
+// El ABM (alta/baja/modificación) de cabinas sólo lo puede operar el administrador.
 export default async function SillonesPage() {
   const session = await requireUser(["ADMIN", "RECEPTION"]);
   const clinic = await prisma.clinic.findFirst();
@@ -37,7 +37,7 @@ export default async function SillonesPage() {
   return (
     <div>
       <AutoRefresh seconds={30} />
-      <PageTitle title="Sillones" />
+      <PageTitle title="Cabinas" />
 
       {session.role === "ADMIN" && <AdminChairManager />}
 

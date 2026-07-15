@@ -4,7 +4,7 @@ import { formatDateTime } from "@/lib/format";
 import { PageTitle } from "../ui";
 import { saveTemplate } from "../actions";
 
-export const metadata = { title: "Mensajes — Consultorio" };
+export const metadata = { title: "Mensajes — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function MensajesPage() {
@@ -30,7 +30,7 @@ export default async function MensajesPage() {
       <section>
         <h2 className="mb-3 text-lg font-semibold">Plantillas</h2>
         <p className="mb-3 text-sm text-neutral-500">
-          Variables disponibles: {"{{paciente}}, {{tratamiento}}, {{fecha}}, {{hora}}, {{odontologo}}, {{consultorio}}, {{direccion}}, {{preparacion}}, {{cuidados}}, {{link}}, {{accion}}"}
+          Variables disponibles: {"{{paciente}}, {{tratamiento}}, {{fecha}}, {{hora}}, {{odontologo}}, {{centro}}, {{direccion}}, {{preparacion}}, {{cuidados}}, {{link}}, {{accion}}"}
         </p>
         <div className="flex flex-col gap-3">
           {templates.map((t) => (

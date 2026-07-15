@@ -3,12 +3,12 @@ import { requireUser } from "@/lib/auth";
 import { PageTitle } from "../ui";
 import { HorariosManager } from "./manage-client";
 
-export const metadata = { title: "Horarios de atención — Consultorio" };
+export const metadata = { title: "Horarios de atención — Centro" };
 export const dynamic = "force-dynamic";
 
-// Horarios semanales de atención por odontólogo:
-//  · Admin: gestiona los horarios de cualquier odontólogo.
-//  · Odontólogo: gestiona los suyos desde su perfil.
+// Horarios semanales de atención por profesional:
+//  · Admin: gestiona los horarios de cualquier profesional.
+//  · Profesional: gestiona los suyos desde su perfil.
 export default async function HorariosPage({
   searchParams,
 }: {
@@ -47,9 +47,9 @@ export default async function HorariosPage({
     <div>
       <PageTitle title="Horarios de atención" />
       <p className="mb-6 max-w-2xl text-sm text-neutral-500">
-        Días y franjas horarias en que atiende cada odontólogo. Los turnos online y del
+        Días y franjas horarias en que atiende cada profesional. Los turnos online y del
         dashboard solo se ofrecen dentro de estos horarios (cruzados con el horario del
-        consultorio). Cada bloque puede fijar un sillón; si no se indica, se usa el sillón
+        centro). Cada bloque puede fijar una cabina; si no se indica, se usa la cabina
         por defecto o cualquiera de los asignados que esté libre.
       </p>
       <HorariosManager

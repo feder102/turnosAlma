@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     startsAt: Date;
   }) => ({
     paciente: appt.patient.firstName,
-    consultorio: clinic?.name ?? "",
+    centro: clinic?.name ?? "",
     direccion: clinic?.address ?? "",
     tratamiento: appt.treatment.name,
     fecha: formatDate(appt.startsAt, tz),
@@ -136,7 +136,7 @@ export async function GET(req: NextRequest) {
       templateKey: "recall_6m",
       vars: {
         paciente: patient.firstName,
-        consultorio: clinic?.name ?? "",
+        centro: clinic?.name ?? "",
         link: `${appBaseUrl()}/reservar`,
       },
     });

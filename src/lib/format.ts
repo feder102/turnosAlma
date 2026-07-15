@@ -1,4 +1,4 @@
-// Formateo de fechas (siempre en la zona horaria del consultorio) y dinero.
+// Formateo de fechas (siempre en la zona horaria del centro) y dinero.
 
 export const DEFAULT_TZ =
   process.env.NEXT_PUBLIC_CLINIC_TZ || "America/Argentina/Buenos_Aires";
@@ -71,7 +71,7 @@ function tzOffsetMs(tz: string, utcDate: Date): number {
   return asUTC - utcDate.getTime();
 }
 
-// "2026-07-15" + "09:30" en la zona del consultorio → Date UTC
+// "2026-07-15" + "09:30" en la zona del centro → Date UTC
 export function zonedToUtc(dateStr: string, timeStr: string, tz = DEFAULT_TZ): Date {
   const [y, m, d] = dateStr.split("-").map(Number);
   const [hh, mm] = timeStr.split(":").map(Number);
@@ -80,7 +80,7 @@ export function zonedToUtc(dateStr: string, timeStr: string, tz = DEFAULT_TZ): D
   return new Date(utcGuess - offset);
 }
 
-// Fecha "YYYY-MM-DD" y día de semana (0=domingo) de un instante, vistos en la zona del consultorio
+// Fecha "YYYY-MM-DD" y día de semana (0=domingo) de un instante, vistos en la zona del centro
 export function utcToZonedParts(date: Date, tz = DEFAULT_TZ) {
   const dtf = new Intl.DateTimeFormat("en-CA", {
     timeZone: tz,

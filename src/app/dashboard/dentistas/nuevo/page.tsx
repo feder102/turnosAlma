@@ -3,7 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { PageTitle } from "../../ui";
 import { DentistForm } from "../DentistForm";
 
-export const metadata = { title: "Nuevo odontólogo — Consultorio" };
+export const metadata = { title: "Nuevo profesional — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function NuevoDentistaPage() {
@@ -16,7 +16,7 @@ export default async function NuevoDentistaPage() {
 
   return (
     <div>
-      <PageTitle title="Nuevo odontólogo" />
+      <PageTitle title="Nuevo profesional" />
       <DentistForm chairs={chairs} />
     </div>
   );

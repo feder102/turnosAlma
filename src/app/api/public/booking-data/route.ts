@@ -4,7 +4,7 @@ import { SPECIALTY_LABELS, type Specialty } from "@/lib/domain";
 
 export const dynamic = "force-dynamic";
 
-// Datos que necesita el wizard público: tratamientos, odontólogos y consultorio.
+// Datos que necesita el wizard público: tratamientos, profesionales y centro.
 export async function GET() {
   const [clinic, treatments, dentists] = await Promise.all([
     prisma.clinic.findFirst(),

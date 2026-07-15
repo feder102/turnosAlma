@@ -11,7 +11,7 @@ import {
 import { APPOINTMENT_STATUS_COLORS, type AppointmentStatus, WEEKDAY_LABELS } from "@/lib/domain";
 import { PageTitle } from "../ui";
 
-export const metadata = { title: "Agenda — Consultorio" };
+export const metadata = { title: "Agenda — Centro" };
 export const dynamic = "force-dynamic";
 
 export default async function AgendaPage({
@@ -90,7 +90,7 @@ export default async function AgendaPage({
             vista === "odontologo" ? "bg-sky-600 text-white" : "border border-neutral-300 bg-white"
           }`}
         >
-          Por odontólogo
+          Por profesional
         </Link>
         <Link
           href={`/dashboard/agenda?semana=${weekOffset}&vista=sillon`}
@@ -98,7 +98,7 @@ export default async function AgendaPage({
             vista === "sillon" ? "bg-sky-600 text-white" : "border border-neutral-300 bg-white"
           }`}
         >
-          Por sillón
+          Por cabina
         </Link>
       </div>
 
@@ -123,7 +123,7 @@ export default async function AgendaPage({
             })}
           </div>
 
-          {/* Filas por odontólogo o sillón */}
+          {/* Filas por profesional o cabina */}
           {groups.map((g) => (
             <div key={g.id} className="mt-1 grid grid-cols-[140px_repeat(6,1fr)] gap-1">
               <div className="flex items-center rounded-lg bg-white px-3 py-2 text-sm font-medium shadow-sm">

@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { togglePatient } from "../actions";
 import { PageTitle } from "../ui";
 
-export const metadata = { title: "Pacientes — Consultorio" };
+export const metadata = { title: "Pacientes — Centro" };
 export const dynamic = "force-dynamic";
 
 const PER_PAGE = 20;
@@ -21,7 +21,7 @@ export default async function PacientesPage({
   const page = Math.max(1, Number(pageStr) || 1);
   const skip = (page - 1) * PER_PAGE;
 
-  // El odontólogo ve solo pacientes que atendió
+  // El profesional ve solo pacientes que atendió
   const dentistFilter =
     session.role === "DENTIST" && session.dentistId
       ? { appointments: { some: { dentistId: session.dentistId } } }
