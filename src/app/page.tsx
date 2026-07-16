@@ -1,5 +1,27 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import {
+  Award,
+  Dumbbell,
+  LogIn,
+  MapPin,
+  Snowflake,
+  Sparkles,
+  Sun,
+  TrendingUp,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
   title: "Alma San Juan — Depilación Definitiva Láser | Centro Oficial Soprano ICE",
@@ -22,52 +44,65 @@ const CLINIC = {
 
 const SERVICES = [
   {
-    icon: "🦵",
+    icon: Dumbbell,
     title: "Piernas completas",
     description:
       "El tratamiento más elegido: piernas enteras con tecnología Soprano ICE, prácticamente indoloro y apto todo el año.",
   },
   {
-    icon: "✨",
+    icon: Sparkles,
     title: "Cavado, axilas y tira de cola",
     description:
       "Las zonas más sensibles tratadas con el sistema ICE de frío continuo, para una experiencia cómoda y segura.",
   },
   {
-    icon: "💆‍♀️",
+    icon: Snowflake,
     title: "Rostro y bozo",
     description:
       "Depilación facial delicada y precisa, ideal para bozo, mentón y rostro completo.",
   },
   {
-    icon: "💪",
+    icon: Award,
     title: "Depilación masculina",
     description:
       "Espalda, tórax, piernas y más. Planes pensados para el vello masculino, más grueso y resistente.",
   },
 ];
 
+const REELS = [
+  {
+    src: "/media/reel-pelo-blanco.mp4",
+    caption:
+      "¿Sabías que el láser no elimina el pelo blanco? Te contamos por qué.",
+  },
+  {
+    src: "/media/reel-rutina-depilacion.mp4",
+    caption:
+      "El vello no desaparece solo… con depilación definitiva te despedís de esa rutina.",
+  },
+];
+
 const BENEFITS = [
   {
-    icon: "❄️",
+    icon: Snowflake,
     title: "Tecnología ICE",
     description:
       "Frío continuo en la piel durante todo el disparo: un tratamiento prácticamente indoloro.",
   },
   {
-    icon: "🏅",
+    icon: Award,
     title: "Centro oficial",
     description:
       "Somos el único centro oficial Soprano ICE en San Juan. Equipamiento original de Alma Lasers.",
   },
   {
-    icon: "🌞",
+    icon: Sun,
     title: "Todo el año",
     description:
       "Apto para todo tipo de piel, incluso piel bronceada. Podés tratarte los 365 días del año.",
   },
   {
-    icon: "📈",
+    icon: TrendingUp,
     title: "Resultados reales",
     description:
       "Reducción progresiva y definitiva del vello, sesión a sesión, con seguimiento profesional.",
@@ -82,7 +117,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-function LoginIcon({ className }: { className?: string }) {
+function InstagramIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -94,134 +129,135 @@ function LoginIcon({ className }: { className?: string }) {
       className={className}
       aria-hidden
     >
-      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-      <path d="M10 17l5-5-5-5" />
-      <path d="M15 12H3" />
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
     </svg>
   );
 }
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white text-neutral-900">
+    <main className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b bg-background/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6">
-          <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-rose-100 to-fuchsia-100 text-lg font-bold text-fuchsia-700">
-              A
-            </span>
-            <span className="truncate text-base font-bold leading-tight tracking-tight sm:text-lg">
-              Alma <span className="font-normal text-neutral-500">San Juan</span>
-            </span>
+          <Link href="/" className="flex min-w-0 shrink-0 items-center">
+            <Image
+              src="/brand/alma-mark.png"
+              alt="Alma San Juan"
+              width={657}
+              height={320}
+              priority
+              className="h-11 w-auto sm:h-14"
+            />
           </Link>
-          <nav className="hidden items-center gap-6 text-sm font-medium text-neutral-600 lg:flex">
-            <a href="#servicios" className="transition hover:text-neutral-900">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
+            <a href="#servicios" className="transition hover:text-foreground">
               Zonas
             </a>
-            <a href="#soprano" className="transition hover:text-neutral-900">
+            <a href="#soprano" className="transition hover:text-foreground">
               Soprano ICE
             </a>
-            <a href="#contacto" className="transition hover:text-neutral-900">
+            <a href="#contacto" className="transition hover:text-foreground">
               Contacto
             </a>
           </nav>
           <div className="flex shrink-0 items-center gap-2">
-            <Link
-              href="/login"
-              aria-label="Acceso profesionales"
-              title="Acceso profesionales"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-neutral-300 text-neutral-700 transition hover:bg-neutral-100 sm:hidden"
-            >
-              <LoginIcon className="h-5 w-5" />
-            </Link>
-            <Link
-              href="/login"
-              className="hidden rounded-full border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 sm:inline-block"
-            >
-              Acceso profesionales
-            </Link>
-            <Link
-              href="/reservar"
-              className="whitespace-nowrap rounded-full bg-fuchsia-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-fuchsia-500 sm:px-5"
-            >
-              Turnos online
-            </Link>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              size="icon"
+              className="rounded-full sm:hidden"
+              render={
+                <Link href="/login" aria-label="Acceso profesionales" title="Acceso profesionales">
+                  <LogIn />
+                </Link>
+              }
+            />
+            <Button
+              nativeButton={false}
+              variant="outline"
+              className="hidden rounded-full sm:inline-flex"
+              render={<Link href="/login">Acceso profesionales</Link>}
+            />
+            <Button
+              nativeButton={false}
+              className="rounded-full bg-fuchsia-600 text-white shadow-sm hover:bg-fuchsia-500"
+              render={<Link href="/reservar">Turnos online</Link>}
+            />
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-rose-50 to-white">
+      <section className="bg-gradient-to-b from-rose-50 to-background">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
           <div className="text-center md:text-left">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-fuchsia-600">
+            <Badge className="mb-4 bg-fuchsia-100 text-fuchsia-700 hover:bg-fuchsia-100">
               {CLINIC.tagline}
-            </p>
+            </Badge>
             <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
               Tu piel merece la{" "}
               <span className="text-fuchsia-600">mejor tecnología</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-neutral-600 md:mx-0">
+            <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground md:mx-0">
               Depilación definitiva láser con Soprano ICE, el equipo líder en el
               mundo. No pierdas tiempo llamando: autogestioná tu turno, 24/7, en
               pocos clics.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row md:items-start">
-              <Link
-                href="/reservar"
-                className="w-full rounded-full bg-fuchsia-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-fuchsia-600/30 transition hover:bg-fuchsia-500 sm:w-auto"
-              >
-                ¡Quiero mi turno!
-              </Link>
-              <a
-                href={CLINIC.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-full border border-emerald-500 px-8 py-4 text-lg font-semibold text-emerald-600 transition hover:bg-emerald-50 sm:w-auto"
-              >
-                <WhatsAppIcon className="h-5 w-5" />
-                WhatsApp
-              </a>
+              <Button
+                nativeButton={false}
+                size="lg"
+                className="w-full rounded-full bg-fuchsia-600 px-8 py-6 text-lg font-bold text-white shadow-lg shadow-fuchsia-600/30 hover:bg-fuchsia-500 sm:w-auto"
+                render={<Link href="/reservar">¡Quiero mi turno!</Link>}
+              />
+              <Button
+                nativeButton={false}
+                variant="outline"
+                size="lg"
+                className="w-full rounded-full border-emerald-500 px-8 py-6 text-lg font-semibold text-emerald-600 hover:bg-emerald-50 hover:text-emerald-600 sm:w-auto"
+                render={
+                  <a href={CLINIC.whatsapp} target="_blank" rel="noopener noreferrer">
+                    <WhatsAppIcon className="size-5" />
+                    WhatsApp
+                  </a>
+                }
+              />
             </div>
           </div>
-          <div className="relative">
-            <div className="flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-rose-100 via-fuchsia-50 to-violet-100 shadow-xl ring-1 ring-neutral-200">
-              <div className="px-10 text-center">
-                <p className="text-7xl">✨</p>
-                <p className="mt-6 text-2xl font-bold text-fuchsia-900">
-                  Resultados reales.
-                </p>
-                <p className="text-2xl font-semibold text-fuchsia-700">
-                  Tecnología original.
-                </p>
-                <p className="mt-4 text-sm uppercase tracking-widest text-fuchsia-500">
-                  Soprano ICE · Alma Lasers
-                </p>
-              </div>
-            </div>
+          <div className="relative aspect-[3/4] overflow-hidden rounded-3xl shadow-xl ring-1 ring-border">
+            <Image
+              src="/media/soprano-vs-cera.jpg"
+              alt="Aplicación de depilación láser Soprano ICE en Alma San Juan"
+              fill
+              priority
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </section>
 
       {/* Destacados */}
-      <section className="border-y border-neutral-100 bg-neutral-50">
+      <section className="border-y bg-muted/40">
         <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 text-center sm:grid-cols-3">
           <div>
             <p className="font-semibold">Prácticamente indoloro</p>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Sistema ICE de frío continuo en la piel
             </p>
           </div>
           <div>
             <p className="font-semibold">Turnos online 24/7</p>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Reservá desde la compu o el celu, sin esperas
             </p>
           </div>
           <div>
             <p className="font-semibold">Atención personalizada</p>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Consultas por WhatsApp al {CLINIC.phone}
             </p>
           </div>
@@ -233,69 +269,127 @@ export default function Home() {
         <h2 className="text-center text-3xl font-bold tracking-tight">
           ¿Qué zonas tratamos?
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-center text-neutral-600">
+        <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
           Depilación definitiva para mujer y hombre, con planes por zona o
           combos de cuerpo completo.
         </p>
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
           {SERVICES.map((service) => (
-            <div
+            <Card
               key={service.title}
-              className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition hover:border-fuchsia-200 hover:shadow-md"
+              className="border-none ring-1 ring-border transition hover:ring-fuchsia-200 hover:shadow-md"
             >
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-2xl">
-                {service.icon}
-              </div>
-              <h3 className="text-lg font-semibold">{service.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-                {service.description}
-              </p>
-            </div>
+              <CardHeader>
+                <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-fuchsia-700">
+                  <service.icon className="size-6" />
+                </div>
+                <CardTitle className="text-lg">{service.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-sm leading-relaxed">
+                  {service.description}
+                </CardDescription>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </section>
 
       {/* Soprano ICE */}
-      <section id="soprano" className="scroll-mt-20 bg-neutral-50">
+      <section id="soprano" className="scroll-mt-20 bg-muted/40">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <h2 className="text-center text-3xl font-bold tracking-tight">
             ¿Por qué Soprano ICE?
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-center text-neutral-600">
+          <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
             Cada vez que te depilás con cera, el folículo resiste. Con láser, no
             tiene chance.
           </p>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {BENEFITS.map((benefit) => (
-              <div
-                key={benefit.title}
-                className="rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-sm"
-              >
-                <p className="text-3xl">{benefit.icon}</p>
-                <h3 className="mt-3 font-semibold">{benefit.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-                  {benefit.description}
-                </p>
-              </div>
+              <Card key={benefit.title} className="border-none text-center ring-1 ring-border">
+                <CardHeader className="items-center justify-items-center">
+                  <benefit.icon className="size-8 text-fuchsia-600" />
+                  <CardTitle className="mt-2 text-base">{benefit.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-sm leading-relaxed">
+                    {benefit.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
             ))}
           </div>
           <div className="mt-10 text-center">
-            <Link
-              href="/reservar"
-              className="inline-block rounded-full bg-fuchsia-600 px-6 py-3 font-bold text-white transition hover:bg-fuchsia-500"
-            >
-              Empezá tu tratamiento
-            </Link>
+            <Button
+              nativeButton={false}
+              className="rounded-full bg-fuchsia-600 px-6 py-5 font-bold text-white hover:bg-fuchsia-500"
+              render={<Link href="/reservar">Empezá tu tratamiento</Link>}
+            />
           </div>
+        </div>
+      </section>
+
+      {/* Reels / Instagram */}
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <h2 className="text-center text-3xl font-bold tracking-tight">
+          Mirá cómo trabajamos
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
+          Contenido real de nuestro centro, directo desde{" "}
+          <a
+            href={CLINIC.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-fuchsia-600 underline-offset-4 hover:underline"
+          >
+            {CLINIC.instagramHandle}
+          </a>
+          .
+        </p>
+        <div className="mx-auto mt-12 grid max-w-2xl gap-6 sm:grid-cols-2">
+          {REELS.map((reel) => (
+            <Card key={reel.src} className="overflow-hidden border-none ring-1 ring-border">
+              <div className="relative aspect-[9/16] bg-neutral-900">
+                <video
+                  src={reel.src}
+                  className="h-full w-full object-cover"
+                  controls
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+              </div>
+              <CardContent className="pt-4">
+                <CardDescription className="text-sm leading-relaxed">
+                  {reel.caption}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Button
+            nativeButton={false}
+            variant="outline"
+            className="rounded-full"
+            render={
+              <a href={CLINIC.instagram} target="_blank" rel="noopener noreferrer">
+                <InstagramIcon className="size-4" />
+                Seguinos en Instagram
+              </a>
+            }
+          />
         </div>
       </section>
 
       {/* Sede / Contacto */}
       <section id="contacto" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
         <div className="grid items-stretch gap-10 md:grid-cols-2">
-          <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-violet-100 via-fuchsia-50 to-rose-100 shadow-lg ring-1 ring-neutral-200 md:aspect-auto">
+          <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-violet-100 via-fuchsia-50 to-rose-100 shadow-lg ring-1 ring-border md:aspect-auto">
             <div className="px-10 text-center">
-              <p className="text-6xl">📍</p>
+              <MapPin className="mx-auto size-14 text-fuchsia-600" />
               <p className="mt-4 text-xl font-bold text-fuchsia-900">
                 Paula Albarracín de Sarmiento 1085 (Sur)
               </p>
@@ -307,9 +401,9 @@ export default function Home() {
           </div>
           <div className="flex flex-col justify-center">
             <h2 className="text-3xl font-bold tracking-tight">¿Dónde estamos?</h2>
-            <ul className="mt-6 space-y-4 text-neutral-700">
+            <ul className="mt-6 space-y-4 text-foreground/90">
               <li className="flex items-start gap-3">
-                <span aria-hidden>📍</span>
+                <MapPin className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                 <a
                   href={CLINIC.mapsUrl}
                   target="_blank"
@@ -320,7 +414,7 @@ export default function Home() {
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <span aria-hidden>📲</span>
+                <WhatsAppIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                 <a
                   href={CLINIC.whatsapp}
                   target="_blank"
@@ -331,7 +425,7 @@ export default function Home() {
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <span aria-hidden>📷</span>
+                <InstagramIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                 <a
                   href={CLINIC.instagram}
                   target="_blank"
@@ -342,36 +436,48 @@ export default function Home() {
                 </a>
               </li>
             </ul>
-            <div className="mt-8 rounded-3xl bg-neutral-900 p-8 text-center text-white sm:text-left">
-              <h3 className="text-2xl font-bold">¡No esperes más!</h3>
-              <p className="mt-2 text-neutral-300">
-                Reservá tu turno online y empezá tu depilación definitiva.
-              </p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/reservar"
-                  className="rounded-full bg-fuchsia-600 px-6 py-3 text-center font-bold text-white transition hover:bg-fuchsia-500"
-                >
-                  Reservar un turno
-                </Link>
-                <Link
-                  href="/login"
-                  className="rounded-full border border-neutral-600 px-6 py-3 text-center font-medium text-neutral-200 transition hover:bg-neutral-800"
-                >
-                  Acceso profesionales
-                </Link>
-              </div>
-            </div>
+            <Card className="mt-8 border-none bg-neutral-900 text-white">
+              <CardContent className="p-8 text-center sm:text-left">
+                <h3 className="text-2xl font-bold">¡No esperes más!</h3>
+                <p className="mt-2 text-neutral-300">
+                  Reservá tu turno online y empezá tu depilación definitiva.
+                </p>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <Button
+                    nativeButton={false}
+                    className="rounded-full bg-fuchsia-600 px-6 py-5 font-bold text-white hover:bg-fuchsia-500"
+                    render={<Link href="/reservar">Reservar un turno</Link>}
+                  />
+                  <Button
+                    nativeButton={false}
+                    variant="outline"
+                    className="rounded-full border-neutral-600 bg-transparent px-6 py-5 font-medium text-neutral-200 hover:bg-neutral-800 hover:text-neutral-100"
+                    render={<Link href="/login">Acceso profesionales</Link>}
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
+      <Separator />
+
       {/* Footer */}
-      <footer className="border-t border-neutral-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-neutral-500 sm:flex-row">
-          <p>
-            {CLINIC.name} · {CLINIC.tagline} · {CLINIC.address}
-          </p>
+      <footer className="bg-background">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-muted-foreground sm:flex-row">
+          <div className="flex flex-col items-center gap-3 sm:flex-row">
+            <Image
+              src="/brand/alma-mark.png"
+              alt="Alma San Juan"
+              width={657}
+              height={320}
+              className="h-7 w-auto opacity-80"
+            />
+            <p className="text-center sm:text-left">
+              {CLINIC.name} · {CLINIC.tagline} · {CLINIC.address}
+            </p>
+          </div>
           <Link href="/login" className="transition hover:text-fuchsia-600">
             Acceso al centro
           </Link>
