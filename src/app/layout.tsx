@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Nunito, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"] });
+// Claymorphism: Nunito (terminaciones redondeadas) para títulos,
+// DM Sans (geométrica, legible) para el cuerpo.
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+  variable: "--font-nunito",
+});
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-dm-sans",
+});
 
 export const metadata: Metadata = {
   title: "Alma San Juan — Turnos online",
@@ -13,8 +24,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es">
-      <body className={`${geist.className} min-h-screen bg-neutral-50 text-neutral-900 antialiased`}>
+    // Las variables de next/font van en <html>: los tokens de @theme
+    // (--font-heading, --font-sans) se resuelven en :root y necesitan
+    // que --font-nunito/--font-dm-sans ya existan a ese nivel.
+    <html lang="es" className={`${nunito.variable} ${dmSans.variable}`}>
+      <body className="min-h-screen bg-clay-canvas font-sans text-clay-foreground antialiased">
         {children}
       </body>
     </html>

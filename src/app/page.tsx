@@ -1,27 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import {
-  Award,
-  Dumbbell,
-  LogIn,
-  MapPin,
-  Snowflake,
-  Sparkles,
-  Sun,
-  TrendingUp,
-} from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Blobs } from "@/components/clay/Blobs";
+import { ButtonLink } from "@/components/clay/Button";
+import { Card } from "@/components/clay/Card";
+import { Asterisk, Logo } from "@/components/clay/Logo";
+import { Figure, IconOrb, ReelCard } from "@/components/clay/Media";
+import { cn } from "@/lib/cn";
 
 export const metadata: Metadata = {
   title: "Alma San Juan — Depilación Definitiva Láser | Centro Oficial Soprano ICE",
@@ -42,38 +26,17 @@ const CLINIC = {
     "https://www.google.com/maps/search/?api=1&query=Paula+Albarrac%C3%ADn+de+Sarmiento+1085+Sur%2C+San+Juan%2C+Argentina",
 };
 
-const SERVICES = [
-  {
-    icon: Dumbbell,
-    title: "Piernas completas",
-    description:
-      "El tratamiento más elegido: piernas enteras con tecnología Soprano ICE, prácticamente indoloro y apto todo el año.",
-  },
-  {
-    icon: Sparkles,
-    title: "Cavado, axilas y tira de cola",
-    description:
-      "Las zonas más sensibles tratadas con el sistema ICE de frío continuo, para una experiencia cómoda y segura.",
-  },
-  {
-    icon: Snowflake,
-    title: "Rostro y bozo",
-    description:
-      "Depilación facial delicada y precisa, ideal para bozo, mentón y rostro completo.",
-  },
-  {
-    icon: Award,
-    title: "Depilación masculina",
-    description:
-      "Espalda, tórax, piernas y más. Planes pensados para el vello masculino, más grueso y resistente.",
-  },
-];
+// Marca real de Alma San Juan (public/brand, public/media).
+const MEDIA = {
+  logo: "/brand/alma-mark.png",
+  hero: "/media/soprano-vs-cera.jpg",
+  sede: undefined as string | undefined, // sin foto de fachada todavía
+};
 
 const REELS = [
   {
     src: "/media/reel-pelo-blanco.mp4",
-    caption:
-      "¿Sabías que el láser no elimina el pelo blanco? Te contamos por qué.",
+    caption: "¿Sabías que el láser no elimina el pelo blanco? Te contamos por qué.",
   },
   {
     src: "/media/reel-rutina-depilacion.mp4",
@@ -82,30 +45,69 @@ const REELS = [
   },
 ];
 
+const SERVICES = [
+  {
+    icon: "🦵",
+    title: "Piernas completas",
+    description:
+      "El tratamiento más elegido: piernas enteras con tecnología Soprano ICE, prácticamente indoloro y apto todo el año.",
+    gradient: "from-purple-400 to-purple-600",
+    image: undefined as string | undefined, // "/img/zona-piernas.jpg"
+  },
+  {
+    icon: "✨",
+    title: "Cavado, axilas y tira de cola",
+    description:
+      "Las zonas más sensibles tratadas con el sistema ICE de frío continuo, para una experiencia cómoda y segura.",
+    gradient: "from-pink-400 to-pink-600",
+    image: undefined as string | undefined, // "/img/zona-cavado.jpg"
+  },
+  {
+    icon: "💆‍♀️",
+    title: "Rostro y bozo",
+    description:
+      "Depilación facial delicada y precisa, ideal para bozo, mentón y rostro completo.",
+    gradient: "from-sky-400 to-sky-600",
+    image: undefined as string | undefined, // "/img/zona-rostro.jpg"
+  },
+  {
+    icon: "💪",
+    title: "Depilación masculina",
+    description:
+      "Espalda, tórax, piernas y más. Planes pensados para el vello masculino, más grueso y resistente.",
+    gradient: "from-amber-400 to-amber-600",
+    image: undefined as string | undefined, // "/img/zona-hombre.jpg"
+  },
+];
+
 const BENEFITS = [
   {
-    icon: Snowflake,
+    icon: "❄️",
     title: "Tecnología ICE",
     description:
       "Frío continuo en la piel durante todo el disparo: un tratamiento prácticamente indoloro.",
+    gradient: "from-cyan-400 to-cyan-600",
   },
   {
-    icon: Award,
+    icon: "🏅",
     title: "Centro oficial",
     description:
       "Somos el único centro oficial Soprano ICE en San Juan. Equipamiento original de Alma Lasers.",
+    gradient: "from-violet-400 to-violet-600",
   },
   {
-    icon: Sun,
+    icon: "🌞",
     title: "Todo el año",
     description:
       "Apto para todo tipo de piel, incluso piel bronceada. Podés tratarte los 365 días del año.",
+    gradient: "from-amber-400 to-amber-600",
   },
   {
-    icon: TrendingUp,
+    icon: "📈",
     title: "Resultados reales",
     description:
       "Reducción progresiva y definitiva del vello, sesión a sesión, con seguimiento profesional.",
+    gradient: "from-emerald-400 to-emerald-600",
   },
 ];
 
@@ -117,7 +119,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-function InstagramIcon({ className }: { className?: string }) {
+function LoginIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -129,219 +131,241 @@ function InstagramIcon({ className }: { className?: string }) {
       className={className}
       aria-hidden
     >
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+      <path d="M10 17l5-5-5-5" />
+      <path d="M15 12H3" />
     </svg>
   );
 }
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen">
+      <Blobs />
+
       {/* Header */}
-      <header className="sticky top-0 z-20 border-b bg-background/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6">
-          <Link href="/" className="flex min-w-0 shrink-0 items-center">
-            <Image
-              src="/brand/alma-mark.png"
-              alt="Alma San Juan"
-              width={657}
-              height={320}
-              priority
-              className="h-11 w-auto sm:h-14"
-            />
+      <header className="sticky top-4 z-20 mx-4 sm:mx-6">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 rounded-[32px] bg-white/70 px-4 shadow-clay-card backdrop-blur-xl sm:h-20 sm:gap-4 sm:rounded-[40px] sm:px-8">
+          <Link href="/" aria-label="Alma San Juan — inicio" className="min-w-0">
+            <Logo src={MEDIA.logo} />
           </Link>
-          <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
-            <a href="#servicios" className="transition hover:text-foreground">
+          <nav
+            className="hidden items-center gap-7 text-sm font-bold text-clay-muted lg:flex"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            <a href="#servicios" className="transition hover:text-clay-accent">
               Zonas
             </a>
-            <a href="#soprano" className="transition hover:text-foreground">
+            <a href="#soprano" className="transition hover:text-clay-accent">
               Soprano ICE
             </a>
-            <a href="#contacto" className="transition hover:text-foreground">
+            <a href="#contacto" className="transition hover:text-clay-accent">
               Contacto
             </a>
           </nav>
           <div className="flex shrink-0 items-center gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              size="icon"
-              className="rounded-full sm:hidden"
-              render={
-                <Link href="/login" aria-label="Acceso profesionales" title="Acceso profesionales">
-                  <LogIn />
-                </Link>
-              }
-            />
-            <Button
-              nativeButton={false}
-              variant="outline"
-              className="hidden rounded-full sm:inline-flex"
-              render={<Link href="/login">Acceso profesionales</Link>}
-            />
-            <Button
-              nativeButton={false}
-              className="rounded-full bg-fuchsia-600 text-white shadow-sm hover:bg-fuchsia-500"
-              render={<Link href="/reservar">Turnos online</Link>}
-            />
+            <Link
+              href="/login"
+              aria-label="Acceso profesionales"
+              title="Acceso profesionales"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-clay-muted shadow-clay-button transition-all duration-200 hover:-translate-y-1 hover:text-clay-accent active:scale-[0.92] active:shadow-clay-pressed sm:hidden"
+            >
+              <LoginIcon className="h-5 w-5" />
+            </Link>
+            <Link
+              href="/login"
+              className="hidden rounded-[20px] bg-white px-5 py-3 text-sm font-bold text-clay-muted shadow-clay-button transition-all duration-200 hover:-translate-y-1 hover:text-clay-accent active:scale-[0.92] active:shadow-clay-pressed sm:inline-block"
+            >
+              Acceso profesionales
+            </Link>
+            <ButtonLink href="/reservar" size="sm" className="whitespace-nowrap">
+              Turnos online
+            </ButtonLink>
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-rose-50 to-background">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
+      <section className="px-4 sm:px-6">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 py-16 md:grid-cols-2 md:py-24">
           <div className="text-center md:text-left">
-            <Badge className="mb-4 bg-fuchsia-100 text-fuchsia-700 hover:bg-fuchsia-100">
+            <span
+              className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/70 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-clay-accent shadow-clay-card backdrop-blur-xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              <Asterisk className="h-4 w-4" />
               {CLINIC.tagline}
-            </Badge>
-            <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-              Tu piel merece la{" "}
-              <span className="text-fuchsia-600">mejor tecnología</span>
+            </span>
+            <h1
+              className="clay-text-gradient max-w-2xl text-5xl font-black leading-[1.1] tracking-tight sm:text-6xl md:text-7xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Tu piel merece la mejor tecnología
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground md:mx-0">
+            <p className="mx-auto mt-6 max-w-2xl text-lg font-medium leading-relaxed text-clay-muted md:mx-0">
               Depilación definitiva láser con Soprano ICE, el equipo líder en el
               mundo. No pierdas tiempo llamando: autogestioná tu turno, 24/7, en
               pocos clics.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row md:items-start">
-              <Button
-                nativeButton={false}
+              <ButtonLink href="/reservar" size="lg" className="w-full sm:w-auto">
+                ¡Agendá tu turno ahora!
+              </ButtonLink>
+              <ButtonLink
+                href={CLINIC.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="secondary"
                 size="lg"
-                className="w-full rounded-full bg-fuchsia-600 px-8 py-6 text-lg font-bold text-white shadow-lg shadow-fuchsia-600/30 hover:bg-fuchsia-500 sm:w-auto"
-                render={<Link href="/reservar">¡Quiero mi turno!</Link>}
-              />
-              <Button
-                nativeButton={false}
-                variant="outline"
-                size="lg"
-                className="w-full rounded-full border-emerald-500 px-8 py-6 text-lg font-semibold text-emerald-600 hover:bg-emerald-50 hover:text-emerald-600 sm:w-auto"
-                render={
-                  <a href={CLINIC.whatsapp} target="_blank" rel="noopener noreferrer">
-                    <WhatsAppIcon className="size-5" />
-                    WhatsApp
-                  </a>
-                }
-              />
+                className="w-full sm:w-auto"
+              >
+                <WhatsAppIcon className="h-5 w-5 text-[#25D366]" />
+                WhatsApp
+              </ButtonLink>
             </div>
           </div>
-          <div className="relative aspect-[3/4] overflow-hidden rounded-3xl shadow-xl ring-1 ring-border">
-            <Image
-              src="/media/soprano-vs-cera.jpg"
-              alt="Aplicación de depilación láser Soprano ICE en Alma San Juan"
-              fill
-              priority
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
+          <div className="relative">
+            {/* Formas clay que orbitan la foto, rompiendo el contenedor */}
+            <div className="animate-clay-float-slow absolute -left-6 -top-6 z-10 hidden h-24 w-24 rounded-[32px] bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] shadow-clay-button lg:block" />
+            <div className="animate-clay-float-delayed absolute -bottom-8 -right-6 z-10 hidden h-28 w-28 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 shadow-clay-button lg:block" />
+            <Figure
+              src={MEDIA.hero}
+              alt="Cada vez que te depilás con cera, el folículo resiste. Con láser, no tiene chance — aplicación de Soprano ICE en Alma San Juan"
+              className="animate-clay-breathe aspect-[3/4]"
+            >
+              <div className="px-10 text-center">
+                <Asterisk className="mx-auto h-16 w-16 text-clay-accent/70" />
+                <p
+                  className="mt-8 text-3xl font-black leading-tight text-clay-accent"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  Resultados reales.
+                  <br />
+                  Tecnología original.
+                </p>
+                <p className="mt-5 text-xs font-bold uppercase tracking-widest text-clay-muted">
+                  Soprano ICE · Alma Lasers
+                </p>
+              </div>
+            </Figure>
           </div>
         </div>
       </section>
 
       {/* Destacados */}
-      <section className="border-y bg-muted/40">
-        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 text-center sm:grid-cols-3">
-          <div>
-            <p className="font-semibold">Prácticamente indoloro</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Sistema ICE de frío continuo en la piel
-            </p>
-          </div>
-          <div>
-            <p className="font-semibold">Turnos online 24/7</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Reservá desde la compu o el celu, sin esperas
-            </p>
-          </div>
-          <div>
-            <p className="font-semibold">Atención personalizada</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Consultas por WhatsApp al {CLINIC.phone}
-            </p>
-          </div>
+      <section className="px-4 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <Card
+            className="rounded-[48px] p-8 sm:p-12"
+            contentClassName="grid gap-10 text-center sm:grid-cols-3"
+          >
+            <div className="group">
+              <div className="animate-clay-breathe mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 text-3xl shadow-clay-button transition-transform duration-300 group-hover:scale-110">
+                ❄️
+              </div>
+              <p className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                Prácticamente indoloro
+              </p>
+              <p className="mt-1 text-sm font-medium leading-relaxed text-clay-muted">
+                Sistema ICE de frío continuo en la piel
+              </p>
+            </div>
+            <div className="group">
+              <div className="animate-clay-breathe animation-delay-2000 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-400 to-violet-600 text-3xl shadow-clay-button transition-transform duration-300 group-hover:scale-110">
+                📅
+              </div>
+              <p className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                Turnos online 24/7
+              </p>
+              <p className="mt-1 text-sm font-medium leading-relaxed text-clay-muted">
+                Reservá desde la compu o el celu, sin esperas
+              </p>
+            </div>
+            <div className="group">
+              <div className="animate-clay-breathe animation-delay-4000 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-3xl shadow-clay-button transition-transform duration-300 group-hover:scale-110">
+                💬
+              </div>
+              <p className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                Atención personalizada
+              </p>
+              <p className="mt-1 text-sm font-medium leading-relaxed text-clay-muted">
+                Consultas por WhatsApp al {CLINIC.phone}
+              </p>
+            </div>
+          </Card>
         </div>
       </section>
 
       {/* Zonas / Servicios */}
-      <section id="servicios" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
-        <h2 className="text-center text-3xl font-bold tracking-tight">
+      <section id="servicios" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-20 sm:px-6">
+        <h2
+          className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
           ¿Qué zonas tratamos?
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-2xl text-center text-lg font-medium leading-relaxed text-clay-muted">
           Depilación definitiva para mujer y hombre, con planes por zona o
           combos de cuerpo completo.
         </p>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {SERVICES.map((service) => (
-            <Card
-              key={service.title}
-              className="border-none ring-1 ring-border transition hover:ring-fuchsia-200 hover:shadow-md"
-            >
-              <CardHeader>
-                <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-fuchsia-700">
-                  <service.icon className="size-6" />
+        {/* Bento: la primera zona ocupa 2×2, el resto se acomoda alrededor */}
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {SERVICES.map((service, i) => {
+            const hero = i === 0;
+            const wide = i === 3;
+            return (
+              <Card
+                key={service.title}
+                hoverLift
+                className={cn(
+                  hero && "md:col-span-2 md:row-span-2 md:p-10 md:hover:scale-[1.02]",
+                  wide && "md:col-span-3"
+                )}
+                contentClassName={wide ? "sm:flex-row sm:items-center sm:gap-6" : undefined}
+              >
+                <IconOrb
+                  emoji={service.icon}
+                  src={service.image}
+                  gradient={service.gradient}
+                  className={cn("mb-4", hero && "h-20 w-20 text-4xl", wide && "sm:mb-0")}
+                />
+                <div>
+                  <h3
+                    className={cn("font-extrabold", hero ? "text-3xl" : "text-xl")}
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {service.title}
+                  </h3>
+                  <p
+                    className={cn(
+                      "mt-2 font-medium leading-relaxed text-clay-muted",
+                      hero ? "max-w-md text-lg" : "text-sm"
+                    )}
+                  >
+                    {service.description}
+                  </p>
                 </div>
-                <CardTitle className="text-lg">{service.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-sm leading-relaxed">
-                  {service.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Soprano ICE */}
-      <section id="soprano" className="scroll-mt-20 bg-muted/40">
-        <div className="mx-auto max-w-6xl px-6 py-20">
-          <h2 className="text-center text-3xl font-bold tracking-tight">
-            ¿Por qué Soprano ICE?
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
-            Cada vez que te depilás con cera, el folículo resiste. Con láser, no
-            tiene chance.
-          </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {BENEFITS.map((benefit) => (
-              <Card key={benefit.title} className="border-none text-center ring-1 ring-border">
-                <CardHeader className="items-center justify-items-center">
-                  <benefit.icon className="size-8 text-fuchsia-600" />
-                  <CardTitle className="mt-2 text-base">{benefit.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-sm leading-relaxed">
-                    {benefit.description}
-                  </CardDescription>
-                </CardContent>
               </Card>
-            ))}
-          </div>
-          <div className="mt-10 text-center">
-            <Button
-              nativeButton={false}
-              className="rounded-full bg-fuchsia-600 px-6 py-5 font-bold text-white hover:bg-fuchsia-500"
-              render={<Link href="/reservar">Empezá tu tratamiento</Link>}
-            />
-          </div>
+            );
+          })}
         </div>
       </section>
 
       {/* Reels / Instagram */}
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <h2 className="text-center text-3xl font-bold tracking-tight">
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <h2
+          className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
           Mirá cómo trabajamos
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-2xl text-center text-lg font-medium leading-relaxed text-clay-muted">
           Contenido real de nuestro centro, directo desde{" "}
           <a
             href={CLINIC.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-fuchsia-600 underline-offset-4 hover:underline"
+            className="text-clay-accent underline-offset-4 hover:underline"
           >
             {CLINIC.instagramHandle}
           </a>
@@ -349,136 +373,158 @@ export default function Home() {
         </p>
         <div className="mx-auto mt-12 grid max-w-2xl gap-6 sm:grid-cols-2">
           {REELS.map((reel) => (
-            <Card key={reel.src} className="overflow-hidden border-none ring-1 ring-border">
-              <div className="relative aspect-[9/16] bg-neutral-900">
-                <video
-                  src={reel.src}
-                  className="h-full w-full object-cover"
-                  controls
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                />
-              </div>
-              <CardContent className="pt-4">
-                <CardDescription className="text-sm leading-relaxed">
-                  {reel.caption}
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <ReelCard key={reel.src} src={reel.src} caption={reel.caption} />
           ))}
         </div>
-        <div className="mt-10 text-center">
-          <Button
-            nativeButton={false}
-            variant="outline"
-            className="rounded-full"
-            render={
-              <a href={CLINIC.instagram} target="_blank" rel="noopener noreferrer">
-                <InstagramIcon className="size-4" />
-                Seguinos en Instagram
-              </a>
-            }
-          />
+      </section>
+
+      {/* Soprano ICE */}
+      <section id="soprano" className="scroll-mt-28 px-4 sm:px-6">
+        <div className="mx-auto max-w-6xl py-20">
+          <h2
+            className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            ¿Por qué Soprano ICE?
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-lg font-medium leading-relaxed text-clay-muted">
+            Cada vez que te depilás con cera, el folículo resiste. Con láser, no
+            tiene chance.
+          </p>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {BENEFITS.map((benefit) => (
+              <Card key={benefit.title} hoverLift className="group text-center">
+                <IconOrb
+                  emoji={benefit.icon}
+                  gradient={benefit.gradient}
+                  className="mx-auto mb-4 h-20 w-20 rounded-full text-3xl group-hover:scale-110"
+                />
+                <h3 className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                  {benefit.title}
+                </h3>
+                <p className="mt-2 text-sm font-medium leading-relaxed text-clay-muted">
+                  {benefit.description}
+                </p>
+              </Card>
+            ))}
+          </div>
+          <div className="mt-12 text-center">
+            <ButtonLink href="/reservar" size="lg">
+              Empezá tu tratamiento
+            </ButtonLink>
+          </div>
         </div>
       </section>
 
       {/* Sede / Contacto */}
-      <section id="contacto" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
+      <section id="contacto" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-20 sm:px-6">
         <div className="grid items-stretch gap-10 md:grid-cols-2">
-          <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-violet-100 via-fuchsia-50 to-rose-100 shadow-lg ring-1 ring-border md:aspect-auto">
+          <Figure
+            src={MEDIA.sede}
+            alt="Fachada del centro Alma San Juan"
+            className="animate-clay-float-delayed aspect-[4/3] md:aspect-auto"
+          >
             <div className="px-10 text-center">
-              <MapPin className="mx-auto size-14 text-fuchsia-600" />
-              <p className="mt-4 text-xl font-bold text-fuchsia-900">
+              <p className="text-6xl" aria-hidden>
+                📍
+              </p>
+              <p
+                className="mt-4 text-xl font-extrabold text-clay-accent"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
                 Paula Albarracín de Sarmiento 1085 (Sur)
               </p>
-              <p className="text-lg text-fuchsia-700">Capital · San Juan</p>
-              <p className="mt-3 text-sm text-fuchsia-500">
+              <p className="text-lg font-bold text-clay-accent-alt">Capital · San Juan</p>
+              <p className="mt-3 text-sm font-medium text-clay-muted">
                 Lunes a sábado · 7:30 a 22:00 hs
               </p>
             </div>
-          </div>
+          </Figure>
           <div className="flex flex-col justify-center">
-            <h2 className="text-3xl font-bold tracking-tight">¿Dónde estamos?</h2>
-            <ul className="mt-6 space-y-4 text-foreground/90">
+            <h2
+              className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              ¿Dónde estamos?
+            </h2>
+            <ul className="mt-6 space-y-4 font-medium text-clay-foreground">
               <li className="flex items-start gap-3">
-                <MapPin className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                <span aria-hidden>📍</span>
                 <a
                   href={CLINIC.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 transition hover:text-fuchsia-600 hover:underline"
+                  className="underline-offset-4 transition hover:text-clay-accent hover:underline"
                 >
                   {CLINIC.address}
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <WhatsAppIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                <span aria-hidden>📲</span>
                 <a
                   href={CLINIC.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 transition hover:text-fuchsia-600 hover:underline"
+                  className="underline-offset-4 transition hover:text-clay-accent hover:underline"
                 >
                   Turnos y consultas: {CLINIC.phone}
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <InstagramIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                <span aria-hidden>📷</span>
                 <a
                   href={CLINIC.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 transition hover:text-fuchsia-600 hover:underline"
+                  className="underline-offset-4 transition hover:text-clay-accent hover:underline"
                 >
                   {CLINIC.instagramHandle}
                 </a>
               </li>
             </ul>
-            <Card className="mt-8 border-none bg-neutral-900 text-white">
-              <CardContent className="p-8 text-center sm:text-left">
-                <h3 className="text-2xl font-bold">¡No esperes más!</h3>
-                <p className="mt-2 text-neutral-300">
-                  Reservá tu turno online y empezá tu depilación definitiva.
-                </p>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                  <Button
-                    nativeButton={false}
-                    className="rounded-full bg-fuchsia-600 px-6 py-5 font-bold text-white hover:bg-fuchsia-500"
-                    render={<Link href="/reservar">Reservar un turno</Link>}
-                  />
-                  <Button
-                    nativeButton={false}
-                    variant="outline"
-                    className="rounded-full border-neutral-600 bg-transparent px-6 py-5 font-medium text-neutral-200 hover:bg-neutral-800 hover:text-neutral-100"
-                    render={<Link href="/login">Acceso profesionales</Link>}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            <div className="relative mt-8 overflow-hidden rounded-[48px] bg-gradient-to-br from-[#A78BFA] via-[#7C3AED] to-[#DB2777] p-8 text-center text-white shadow-clay-deep sm:p-10 sm:text-left">
+              <Asterisk className="animate-clay-float-slow absolute -right-8 -top-8 h-36 w-36 text-white/15" />
+              <h3
+                className="relative text-3xl font-black leading-tight sm:text-4xl"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                ¿Qué zona estás harta de depilarte?
+              </h3>
+              <p className="relative mt-3 font-medium leading-relaxed text-white/85">
+                Acá podemos tratarla. Reservá tu turno online y empezá tu
+                depilación definitiva.
+              </p>
+              <div className="relative mt-6 flex flex-col gap-3 sm:flex-row">
+                <ButtonLink href="/reservar" variant="secondary" className="text-clay-accent">
+                  Reservar un turno
+                </ButtonLink>
+                <ButtonLink
+                  href="/login"
+                  variant="outline"
+                  className="border-white/40 text-white hover:border-white hover:bg-white/10"
+                >
+                  Acceso profesionales
+                </ButtonLink>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <Separator />
-
       {/* Footer */}
-      <footer className="bg-background">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-muted-foreground sm:flex-row">
-          <div className="flex flex-col items-center gap-3 sm:flex-row">
-            <Image
-              src="/brand/alma-mark.png"
-              alt="Alma San Juan"
-              width={657}
-              height={320}
-              className="h-7 w-auto opacity-80"
-            />
-            <p className="text-center sm:text-left">
-              {CLINIC.name} · {CLINIC.tagline} · {CLINIC.address}
+      <footer className="px-4 pb-8 sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 rounded-[32px] bg-white/70 px-6 py-6 text-sm font-medium text-clay-muted shadow-clay-card backdrop-blur-xl sm:flex-row sm:rounded-[40px] sm:px-8">
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <Logo src={MEDIA.logo} className="h-8 sm:h-8" />
+            <p>
+              {CLINIC.tagline} · {CLINIC.address}
             </p>
           </div>
-          <Link href="/login" className="transition hover:text-fuchsia-600">
+          <Link
+            href="/login"
+            className="font-bold transition hover:text-clay-accent"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
             Acceso al centro
           </Link>
         </div>
@@ -490,7 +536,7 @@ export default function Home() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Consultar por WhatsApp"
-        className="fixed bottom-6 right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg transition hover:bg-emerald-600"
+        className="fixed bottom-6 right-6 z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#10B981] text-white shadow-clay-button transition-all duration-200 hover:-translate-y-1 hover:shadow-clay-button-hover active:scale-[0.92] active:shadow-clay-pressed"
       >
         <WhatsAppIcon className="h-7 w-7" />
       </a>

@@ -5,6 +5,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Blobs } from "@/components/clay/Blobs";
+import { Button } from "@/components/clay/Button";
+import { Card } from "@/components/clay/Card";
+import { Input, Textarea } from "@/components/clay/Input";
+import { cn } from "@/lib/cn";
 
 type Treatment = {
   id: string;
@@ -48,6 +53,32 @@ function next21Days(): { dateStr: string; label: string; weekday: string }[] {
     });
   }
   return out;
+}
+
+// Tarjeta de selección clay: convexa por defecto, se hunde (concava) al
+// quedar seleccionada, simulando que quedó "presionada" en la superficie.
+function OptionCard({
+  selected,
+  onClick,
+  children,
+}: {
+  selected?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "rounded-[24px] p-4 text-left transition-all duration-300",
+        selected
+          ? "shadow-clay-pressed bg-clay-accent/5 ring-2 ring-clay-accent"
+          : "bg-white shadow-clay-card hover:-translate-y-1 hover:shadow-clay-card-hover"
+      )}
+    >
+      {children}
+    </button>
+  );
 }
 
 export default function BookingWizard() {
@@ -173,7 +204,8 @@ export default function BookingWizard() {
 
   if (loading) {
     return (
-      <main className="mx-auto max-w-lg px-4 py-16 text-center text-neutral-500">
+      <main className="mx-auto max-w-lg px-4 py-16 text-center font-medium text-clay-muted">
+        <Blobs />
         Cargando…
       </main>
     );
@@ -181,25 +213,38 @@ export default function BookingWizard() {
 
   return (
     <main className="mx-auto max-w-lg px-4 pb-24 pt-6">
+      <Blobs />
+
       {/* Encabezado + progreso */}
       <header className="mb-6">
-        <h1 className="text-xl font-bold">{clinic?.name ?? "Reservar turno"}</h1>
-        <div className="mt-4 flex items-center gap-1">
+        <h1
+          className="text-2xl font-extrabold tracking-tight"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          {clinic?.name ?? "Reservar turno"}
+        </h1>
+        <div className="mt-4 flex items-center gap-1.5">
           {STEPS.map((label, i) => (
             <div key={label} className="flex-1">
               <div
-                className={`h-1.5 rounded-full ${i <= step ? "bg-sky-600" : "bg-neutral-200"}`}
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300",
+                  i <= step
+                    ? "bg-gradient-to-r from-clay-accent-light to-clay-accent shadow-clay-button"
+                    : "bg-white shadow-clay-pressed"
+                )}
               />
             </div>
           ))}
         </div>
-        <p className="mt-2 text-sm text-neutral-500">
-          Paso {step + 1} de {STEPS.length}: <span className="font-medium text-neutral-700">{STEPS[step]}</span>
+        <p className="mt-2 text-sm font-medium text-clay-muted">
+          Paso {step + 1} de {STEPS.length}:{" "}
+          <span className="font-bold text-clay-foreground">{STEPS[step]}</span>
         </p>
       </header>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-4 rounded-[20px] bg-red-50 px-4 py-3 text-sm font-medium text-red-700 shadow-clay-pressed">
           {error}
         </div>
       )}
@@ -207,12 +252,13 @@ export default function BookingWizard() {
       {/* Paso 1: tratamiento */}
       {step === 0 && (
         <div className="flex flex-col gap-3">
-          <p className="text-sm text-neutral-600">
+          <p className="text-sm font-medium text-clay-muted">
             ¿Qué necesitás? Si es tu primera visita, te recomendamos la consulta de evaluación.
           </p>
           {treatments.map((t) => (
-            <button
+            <OptionCard
               key={t.id}
+              selected={treatment?.id === t.id}
               onClick={() => {
                 setTreatment(t);
                 setSlot(null);
@@ -220,31 +266,33 @@ export default function BookingWizard() {
                 setDateStr(null);
                 setStep(1);
               }}
-              className={`rounded-xl border bg-white p-4 text-left shadow-sm transition hover:border-sky-400 ${
-                treatment?.id === t.id ? "border-sky-500 ring-2 ring-sky-200" : "border-neutral-200"
-              }`}
             >
               <div className="flex items-baseline justify-between gap-2">
-                <span className="font-semibold">{t.name}</span>
-                <span className="whitespace-nowrap text-sm text-neutral-500">
+                <span className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                  {t.name}
+                </span>
+                <span className="whitespace-nowrap text-sm font-medium text-clay-muted">
                   {t.durationMin} min
                 </span>
               </div>
               {t.description && (
-                <p className="mt-1 text-sm text-neutral-500">{t.description}</p>
+                <p className="mt-1 text-sm font-medium text-clay-muted">{t.description}</p>
               )}
-              <p className="mt-1 text-sm text-neutral-600">
+              <p className="mt-1 text-sm font-bold text-clay-foreground">
                 {money(t.priceCents)}
                 {t.insurancePriceCents != null && (
-                  <span className="text-neutral-400"> · con obra social {money(t.insurancePriceCents)}</span>
+                  <span className="font-medium text-clay-muted">
+                    {" "}
+                    · con obra social {money(t.insurancePriceCents)}
+                  </span>
                 )}
               </p>
               {t.multiSession && (
-                <p className="mt-1 text-xs font-medium text-violet-600">
+                <p className="mt-1 text-xs font-medium text-clay-accent">
                   Tratamiento de {t.defaultSessions} sesiones
                 </p>
               )}
-            </button>
+            </OptionCard>
           ))}
         </div>
       )}
@@ -252,28 +300,30 @@ export default function BookingWizard() {
       {/* Paso 2: profesional */}
       {step === 1 && treatment && (
         <div className="flex flex-col gap-3">
-          <button
+          <OptionCard
             onClick={() => {
               setDentistId(null);
               setStep(2);
             }}
-            className="rounded-xl border border-neutral-200 bg-white p-4 text-left shadow-sm transition hover:border-sky-400"
           >
-            <span className="font-semibold">Cualquier profesional disponible</span>
-            <p className="text-sm text-neutral-500">Más horarios para elegir</p>
-          </button>
+            <span className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+              Cualquier profesional disponible
+            </span>
+            <p className="text-sm font-medium text-clay-muted">Más horarios para elegir</p>
+          </OptionCard>
           {dentists.map((d) => (
-            <button
+            <OptionCard
               key={d.id}
               onClick={() => {
                 setDentistId(d.id);
                 setStep(2);
               }}
-              className="rounded-xl border border-neutral-200 bg-white p-4 text-left shadow-sm transition hover:border-sky-400"
             >
-              <span className="font-semibold">{d.name}</span>
-              <p className="text-sm text-neutral-500">{d.specialtyLabel}</p>
-            </button>
+              <span className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                {d.name}
+              </span>
+              <p className="text-sm font-medium text-clay-muted">{d.specialtyLabel}</p>
+            </OptionCard>
           ))}
         </div>
       )}
@@ -287,24 +337,27 @@ export default function BookingWizard() {
                 <button
                   key={d.dateStr}
                   onClick={() => pickDate(d.dateStr)}
-                  className={`flex w-16 flex-col items-center rounded-xl border px-2 py-2 text-sm transition ${
+                  className={cn(
+                    "flex w-16 flex-col items-center rounded-[20px] px-2 py-3 text-sm transition-all duration-200",
                     dateStr === d.dateStr
-                      ? "border-sky-600 bg-sky-600 text-white"
-                      : "border-neutral-200 bg-white hover:border-sky-400"
-                  }`}
+                      ? "bg-gradient-to-br from-clay-accent-light to-clay-accent text-white shadow-clay-button"
+                      : "bg-white text-clay-foreground shadow-clay-card hover:-translate-y-1"
+                  )}
                 >
-                  <span className="text-xs uppercase opacity-70">{d.weekday}</span>
-                  <span className="font-semibold">{d.label}</span>
+                  <span className="text-xs font-bold uppercase opacity-70">{d.weekday}</span>
+                  <span className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                    {d.label}
+                  </span>
                 </button>
               ))}
             </div>
           </div>
 
           {dateStr && slots === null && (
-            <p className="py-8 text-center text-neutral-500">Buscando horarios…</p>
+            <p className="py-8 text-center font-medium text-clay-muted">Buscando horarios…</p>
           )}
           {dateStr && slots !== null && slots.length === 0 && (
-            <p className="py-8 text-center text-neutral-500">
+            <p className="py-8 text-center font-medium text-clay-muted">
               No quedan horarios para ese día. Probá con otra fecha.
             </p>
           )}
@@ -317,11 +370,12 @@ export default function BookingWizard() {
                     setSlot(s);
                     setStep(3);
                   }}
-                  className={`rounded-lg border py-2.5 text-sm font-medium transition ${
+                  className={cn(
+                    "rounded-[20px] py-2.5 text-sm font-bold transition-all duration-200",
                     slot?.startsAt === s.startsAt
-                      ? "border-sky-600 bg-sky-600 text-white"
-                      : "border-neutral-200 bg-white hover:border-sky-400"
-                  }`}
+                      ? "bg-gradient-to-br from-clay-accent-light to-clay-accent text-white shadow-clay-button"
+                      : "bg-white text-clay-foreground shadow-clay-card hover:-translate-y-1"
+                  )}
                 >
                   {s.time}
                 </button>
@@ -329,7 +383,9 @@ export default function BookingWizard() {
             </div>
           )}
           {!dateStr && (
-            <p className="py-8 text-center text-neutral-500">Elegí un día para ver los horarios.</p>
+            <p className="py-8 text-center font-medium text-clay-muted">
+              Elegí un día para ver los horarios.
+            </p>
           )}
         </div>
       )}
@@ -337,103 +393,105 @@ export default function BookingWizard() {
       {/* Paso 4: datos del paciente */}
       {step === 3 && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
-            <p className="font-semibold">¿Ya sos paciente del centro?</p>
-            <p className="mt-1 text-sm text-neutral-500">
+          <Card>
+            <p className="font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+              ¿Ya sos paciente del centro?
+            </p>
+            <p className="mt-1 text-sm font-medium text-clay-muted">
               Ingresá tu teléfono o email y no te pedimos el resto.
             </p>
             <div className="mt-3 flex gap-2">
-              <input
+              <Input
                 value={lookupValue}
                 onChange={(e) => setLookupValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && doLookup()}
                 placeholder="+54911… o tu email"
-                className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 py-2.5"
+                className="h-12"
               />
-              <button
+              <Button
                 onClick={doLookup}
                 disabled={lookupState === "searching"}
-                className="rounded-lg bg-neutral-800 px-4 py-2.5 font-medium text-white disabled:opacity-50"
+                variant="secondary"
+                size="sm"
+                className="shrink-0"
               >
                 {lookupState === "searching" ? "…" : "Buscar"}
-              </button>
+              </Button>
             </div>
             {lookupState === "found" && knownPatient && (
-              <div className="mt-3 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+              <div className="mt-3 rounded-[20px] bg-clay-success/10 px-4 py-3 text-sm font-medium text-clay-success shadow-clay-pressed">
                 ¡Hola de nuevo, <strong>{knownPatient.firstName}</strong>! Ya tenemos tus datos.
               </div>
             )}
             {lookupState === "notfound" && (
-              <div className="mt-3 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <div className="mt-3 rounded-[20px] bg-clay-warning/10 px-4 py-3 text-sm font-medium text-clay-warning shadow-clay-pressed">
                 No te encontramos — completá tus datos abajo y quedás registrado.
               </div>
             )}
-          </div>
+          </Card>
 
           {!knownPatient && (
-            <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
-              <p className="mb-3 font-semibold">Tus datos</p>
+            <Card>
+              <p className="mb-3 font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+                Tus datos
+              </p>
               <div className="grid grid-cols-2 gap-3">
-                <input
+                <Input
                   placeholder="Nombre *"
                   value={form.firstName}
                   onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                  className="rounded-lg border border-neutral-300 px-3 py-2.5"
                 />
-                <input
+                <Input
                   placeholder="Apellido *"
                   value={form.lastName}
                   onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                  className="rounded-lg border border-neutral-300 px-3 py-2.5"
                 />
-                <input
+                <Input
                   placeholder="WhatsApp * (+54911…)"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="col-span-2 rounded-lg border border-neutral-300 px-3 py-2.5"
+                  className="col-span-2"
                 />
-                <input
+                <Input
                   placeholder="Email"
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="col-span-2 rounded-lg border border-neutral-300 px-3 py-2.5"
+                  className="col-span-2"
                 />
-                <label className="col-span-2 text-sm text-neutral-500">
+                <label className="col-span-2 text-sm font-medium text-clay-muted">
                   Fecha de nacimiento
-                  <input
+                  <Input
                     type="date"
                     value={form.birthDate}
                     onChange={(e) => setForm({ ...form, birthDate: e.target.value })}
-                    className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-neutral-900"
+                    className="mt-1 text-clay-foreground"
                   />
                 </label>
-                <textarea
+                <Textarea
                   placeholder="Datos que debamos saber (piel sensible, medicación, embarazo, tatuajes en la zona)"
                   value={form.medicalNotes}
                   onChange={(e) => setForm({ ...form, medicalNotes: e.target.value })}
                   rows={2}
-                  className="col-span-2 rounded-lg border border-neutral-300 px-3 py-2.5"
+                  className="col-span-2"
                 />
               </div>
-            </div>
+            </Card>
           )}
 
-          <button
-            onClick={() => setStep(4)}
-            disabled={!patientReady}
-            className="rounded-xl bg-sky-600 px-6 py-3.5 font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:opacity-40"
-          >
+          <Button onClick={() => setStep(4)} disabled={!patientReady} size="lg">
             Continuar
-          </button>
+          </Button>
         </div>
       )}
 
       {/* Paso 5: confirmación */}
       {step === 4 && treatment && slot && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <p className="mb-4 text-lg font-bold">Revisá tu turno</p>
+          <Card>
+            <p className="mb-4 text-lg font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
+              Revisá tu turno
+            </p>
             <dl className="flex flex-col gap-2.5 text-sm">
               <Row label="Tratamiento" value={`${treatment.name} (${treatment.durationMin} min)`} />
               <Row
@@ -453,20 +511,16 @@ export default function BookingWizard() {
                 value={knownPatient ? knownPatient.firstName : `${form.firstName} ${form.lastName}`}
               />
             </dl>
-          </div>
+          </Card>
           {treatment.multiSession && (
-            <p className="rounded-lg bg-violet-50 px-4 py-3 text-sm text-violet-700">
+            <p className="rounded-[20px] bg-clay-accent-soft/50 px-4 py-3 text-sm font-medium text-clay-muted shadow-clay-pressed">
               Este tratamiento lleva {treatment.defaultSessions} sesiones. Después de confirmar
               te vamos a proponer las fechas de las siguientes.
             </p>
           )}
-          <button
-            onClick={confirm}
-            disabled={submitting}
-            className="rounded-xl bg-sky-600 px-6 py-4 text-lg font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:opacity-50"
-          >
+          <Button onClick={confirm} disabled={submitting} size="lg">
             {submitting ? "Confirmando…" : "Confirmar turno"}
-          </button>
+          </Button>
         </div>
       )}
 
@@ -474,7 +528,7 @@ export default function BookingWizard() {
       {step > 0 && (
         <button
           onClick={() => setStep(step - 1)}
-          className="mt-6 text-sm text-neutral-500 underline-offset-2 hover:underline"
+          className="mt-6 text-sm font-medium text-clay-muted underline-offset-2 hover:text-clay-accent hover:underline"
         >
           ← Volver al paso anterior
         </button>
@@ -486,8 +540,8 @@ export default function BookingWizard() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4">
-      <dt className="text-neutral-500">{label}</dt>
-      <dd className="text-right font-medium">{value}</dd>
+      <dt className="font-medium text-clay-muted">{label}</dt>
+      <dd className="text-right font-bold">{value}</dd>
     </div>
   );
 }

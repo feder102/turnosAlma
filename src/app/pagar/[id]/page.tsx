@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { mpEnabled, mpPublicKey } from "@/lib/mercadopago";
 import { createBrickPreference, paymentDescription, returnUrl } from "@/lib/payments";
 import { formatMoney } from "@/lib/format";
+import { Blobs } from "@/components/clay/Blobs";
+import { Card } from "@/components/clay/Card";
 import { PaymentBrick } from "./client";
 
 export const metadata = { title: "Pagar" };
@@ -31,12 +33,18 @@ export default async function PagarPage({ params }: { params: Promise<{ id: stri
 
   return (
     <main className="mx-auto max-w-lg px-4 py-10">
-      <h1 className="text-2xl font-bold">Pagá tu turno</h1>
-      <p className="mt-1 text-neutral-500">
-        {description} — <span className="font-medium">{formatMoney(payment.amountCents)}</span>
+      <Blobs />
+      <h1
+        className="text-2xl font-extrabold tracking-tight"
+        style={{ fontFamily: "var(--font-heading)" }}
+      >
+        Pagá tu turno
+      </h1>
+      <p className="mt-1 font-medium text-clay-muted">
+        {description} — <span className="font-bold text-clay-foreground">{formatMoney(payment.amountCents)}</span>
       </p>
 
-      <div className="mt-6 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+      <Card className="mt-6 p-4 sm:p-4">
         <PaymentBrick
           paymentId={payment.id}
           publicKey={mpPublicKey()}
@@ -46,9 +54,9 @@ export default async function PagarPage({ params }: { params: Promise<{ id: stri
           successUrl={returnUrl(payment, "ok")}
           cancelUrl={returnUrl(payment, "cancelado")}
         />
-      </div>
+      </Card>
 
-      <p className="mt-6 text-center text-sm text-neutral-500">
+      <p className="mt-6 text-center text-sm font-medium text-clay-muted">
         Procesado de forma segura por Mercado Pago.
       </p>
     </main>
