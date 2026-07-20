@@ -33,6 +33,21 @@ npm run db:seed          # datos de ejemplo
 npm run dev              # http://localhost:3000
 ```
 
+### Correr con Docker Compose (alternativa)
+
+Requisitos: Docker + Docker Compose. Levanta la app y una base PostgreSQL propia
+(puerto **5433**, para no chocar con `odontoTurnos`, que usa 5432).
+
+```bash
+cp .env.example .env   # completar AUTH_SECRET, etc. (DATABASE_URL se sobrescribe en el compose)
+docker compose up --build
+```
+
+- App: http://localhost:3001 (puerto de host distinto para no chocar con `odontoTurnos`, que usa 3000)
+- La imagen corre `prisma migrate deploy` automáticamente al iniciar el contenedor
+  (ver `docker-entrypoint.sh`), antes de levantar el servidor.
+- Seed manual (opcional): `docker compose exec app node_modules/.bin/tsx prisma/seed.ts`
+
 ### Usuarios de prueba (seed)
 
 | Rol | Email | Contraseña |
@@ -161,6 +176,32 @@ Opción recomendada para empezar: **Twilio API for WhatsApp**.
    cuenta activa.
 
 ---
+
+## Deploy en Coolify
+
+El repo incluye `Dockerfile` + `docker-entrypoint.sh`, listos para un despliegue
+Docker en Coolify (self-hosted).
+
+1. **Base de datos**: en Coolify, crear un recurso **PostgreSQL** (puede ser el
+   mismo servidor Postgres compartido con `odontoTurnos`, con una base por
+   proyecto) y crear la base `turnosalma_db` con su usuario propio.
+2. **Aplicación**: New Resource → Application → conectar este repo de GitHub →
+   Build Pack **Dockerfile** (usa el `Dockerfile` de la raíz).
+3. **Variables de entorno** (tab Environment Variables de la app): configurar
+   todas las de `.env.example`, en particular:
+   - `DATABASE_URL`: connection string interno que muestra el recurso Postgres
+     de Coolify (host = nombre del servicio, ej.
+     `postgresql://turnosalma:PASSWORD@turnosalma-db:5432/turnosalma_db`).
+   - `AUTH_SECRET` (`openssl rand -base64 32`), `NEXT_PUBLIC_APP_URL` (dominio final).
+   - Mercado Pago / Twilio según las secciones anteriores.
+4. **Puerto**: la app expone `3000` (`EXPOSE 3000` en el Dockerfile); Coolify lo
+   detecta solo, o se puede fijar manualmente en Ports Mappings.
+5. **Deploy**: al desplegar, Coolify construye la imagen multi-stage y al
+   arrancar el contenedor el entrypoint corre `prisma migrate deploy`
+   automáticamente contra `DATABASE_URL` antes de levantar el servidor — no
+   hace falta un paso manual de migraciones.
+6. **Dominio/SSL**: configurar el dominio en la app y Coolify emite el
+   certificado Let's Encrypt automáticamente.
 
 ## Deploy en Vercel
 

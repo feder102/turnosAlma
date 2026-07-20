@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: turnosalma_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: turnosalma
+      POSTGRES_PASSWORD: turnosalma
+      POSTGRES_DB: turnosalma
+    ports:
+      # Puerto único para este proyecto (odontoTurnos usa 5432) para evitar
+      # colisiones si ambos stacks corren en la misma máquina.
+      - "5433:5432"
+    volumes:
+      - turnosalma_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U turnosalma"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: turnosalma_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # Sobrescribe DATABASE_URL del .env para apuntar al servicio `db` de este compose.
+      DATABASE_URL: postgresql://turnosalma:turnosalma@db:5432/turnosalma
+    ports:
+      # Puerto de host distinto al de odontoTurnos (3000) para poder correr
+      # ambos stacks en simultáneo en la misma máquina.
+      - "3001:3000"
+
+volumes:
+  turnosalma_db_data:
