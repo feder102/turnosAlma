@@ -1,9 +1,11 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDate, formatTime, formatMoney } from "@/lib/format";
 import { PlanScheduler, PayBox } from "./client";
 import { mpEnabled } from "@/lib/mercadopago";
+import { Blobs } from "@/components/clay/Blobs";
+import { ButtonLink } from "@/components/clay/Button";
+import { Card } from "@/components/clay/Card";
 
 export const metadata = { title: "Turno confirmado" };
 
@@ -36,28 +38,34 @@ export default async function ExitoPage({
 
   return (
     <main className="mx-auto max-w-lg px-4 py-10">
+      <Blobs />
       <div className="text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">
+        <div className="animate-clay-breathe mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-clay-accent-light to-clay-accent text-3xl text-white shadow-clay-button">
           ✓
         </div>
-        <h1 className="text-2xl font-bold">¡Turno confirmado!</h1>
-        <p className="mt-1 text-neutral-500">
+        <h1
+          className="text-2xl font-extrabold tracking-tight"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          ¡Turno confirmado!
+        </h1>
+        <p className="mt-1 font-medium text-clay-muted">
           Te enviamos la confirmación por WhatsApp a {appt.patient.phone}.
         </p>
       </div>
 
       {pago === "ok" && (
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <div className="mt-6 rounded-[20px] bg-clay-success/10 px-4 py-3 text-sm font-medium text-clay-success shadow-clay-pressed">
           ¡Pago recibido! Muchas gracias.
         </div>
       )}
       {pago === "cancelado" && (
-        <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="mt-6 rounded-[20px] bg-clay-warning/10 px-4 py-3 text-sm font-medium text-clay-warning shadow-clay-pressed">
           El pago quedó pendiente. Podés intentarlo de nuevo abajo o abonar en el centro.
         </div>
       )}
 
-      <div className="mt-8 rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+      <Card className="mt-8">
         <dl className="flex flex-col gap-2.5 text-sm">
           <Row label="Paciente" value={`${appt.patient.firstName} ${appt.patient.lastName}`} />
           <Row label="Tratamiento" value={appt.treatment.name} />
@@ -67,7 +75,7 @@ export default async function ExitoPage({
           {clinic && <Row label="Dirección" value={`${clinic.name} — ${clinic.address}`} />}
           <Row label="Importe" value={formatMoney(appt.priceCents)} />
         </dl>
-      </div>
+      </Card>
 
       {canPay && (
         <PayBox
@@ -91,12 +99,12 @@ export default async function ExitoPage({
       )}
 
       {appt.plan && (
-        <div className="mt-6 rounded-xl border border-violet-200 bg-violet-50 p-5">
-          <p className="font-semibold text-violet-900">
+        <div className="mt-6 rounded-[24px] bg-clay-accent-soft/50 p-5 shadow-clay-pressed">
+          <p className="font-extrabold text-clay-accent" style={{ fontFamily: "var(--font-heading)" }}>
             Plan de tratamiento: {appt.plan.appointments.length} de {appt.plan.totalSessions}{" "}
             sesiones agendadas
           </p>
-          <ul className="mt-3 flex flex-col gap-1.5 text-sm text-violet-800">
+          <ul className="mt-3 flex flex-col gap-1.5 text-sm font-medium text-clay-foreground">
             {appt.plan.appointments.map((a) => (
               <li key={a.id}>
                 Sesión {a.sessionNumber}: {formatDate(a.startsAt, tz)} — {formatTime(a.startsAt, tz)} hs
@@ -106,18 +114,15 @@ export default async function ExitoPage({
         </div>
       )}
 
-      <p className="mt-8 text-center text-sm text-neutral-500">
+      <p className="mt-8 text-center text-sm font-medium text-clay-muted">
         ¿Necesitás cambiar el turno? Escribinos por WhatsApp o llamanos al{" "}
         {clinic?.phone ?? "centro"}.
       </p>
 
       <div className="mt-6 text-center">
-        <Link
-          href="/"
-          className="inline-block rounded-lg border border-neutral-300 px-5 py-2.5 font-medium text-neutral-700 transition hover:bg-neutral-50"
-        >
+        <ButtonLink href="/" variant="secondary" size="sm">
           Volver al inicio
-        </Link>
+        </ButtonLink>
       </div>
     </main>
   );
@@ -126,8 +131,8 @@ export default async function ExitoPage({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4">
-      <dt className="text-neutral-500">{label}</dt>
-      <dd className="text-right font-medium">{value}</dd>
+      <dt className="font-medium text-clay-muted">{label}</dt>
+      <dd className="text-right font-bold">{value}</dd>
     </div>
   );
 }

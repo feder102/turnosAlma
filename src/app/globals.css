@@ -6,7 +6,163 @@ html {
   color-scheme: light only;
 }
 
+/* ---------------------------------------------------------------
+   High-Fidelity Claymorphism — paleta "candy shop".
+   Los nombres de token (clay-*) se mantienen estables: cambiar el
+   sistema visual es cambiar estos valores, no el markup.
+   --------------------------------------------------------------- */
+@theme {
+  --color-clay-canvas: #f4f1fa; /* lavanda muy pálido, nunca blanco puro */
+  --color-clay-foreground: #332f3a; /* carbón suave */
+  --color-clay-muted: #635f69; /* gris lavanda: mínimo permitido */
+  --color-clay-accent: #7c3aed; /* violeta vívido: CTA, links, marca */
+  --color-clay-accent-light: #a78bfa; /* violeta claro, arranque de degradés */
+  --color-clay-accent-deep: #5b21b6; /* violeta profundo, paneles oscuros */
+  --color-clay-accent-alt: #db2777; /* rosa fuerte: énfasis secundario */
+  --color-clay-accent-soft: #ede9fe; /* violeta lavado, fondos suaves */
+  --color-clay-tertiary: #0ea5e9; /* celeste: informativo */
+  --color-clay-success: #10b981; /* verde esmeralda */
+  --color-clay-warning: #f59e0b; /* ámbar */
+  --color-clay-card: #ffffff;
+
+  --font-heading: var(--font-nunito), sans-serif;
+  --font-sans: var(--font-dm-sans), sans-serif;
+}
+
 body {
-  background: #fafafa;
-  color: #171717;
+  background: var(--color-clay-canvas);
+  color: var(--color-clay-foreground);
+}
+
+/* ---------- El motor del clay: stacks de 4 sombras ----------
+   Luz difusa arriba-izquierda: oclusión ambiental abajo-derecha,
+   specular arriba-izquierda, más dos inset (rebote de color + rim). */
+
+.shadow-clay-deep {
+  box-shadow:
+    30px 30px 60px #cdc6d9,
+    -30px -30px 60px #ffffff,
+    inset 10px 10px 20px rgba(139, 92, 246, 0.05),
+    inset -10px -10px 20px rgba(255, 255, 255, 0.8);
+}
+
+.shadow-clay-card {
+  box-shadow:
+    16px 16px 32px rgba(160, 150, 180, 0.2),
+    -10px -10px 24px rgba(255, 255, 255, 0.9),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.03),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+}
+
+.shadow-clay-card-hover {
+  box-shadow:
+    24px 24px 48px rgba(160, 150, 180, 0.28),
+    -14px -14px 32px rgba(255, 255, 255, 0.95),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.04),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+}
+
+.shadow-clay-button {
+  box-shadow:
+    12px 12px 24px rgba(139, 92, 246, 0.3),
+    -8px -8px 16px rgba(255, 255, 255, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-clay-button-hover {
+  box-shadow:
+    16px 16px 32px rgba(139, 92, 246, 0.4),
+    -10px -10px 20px rgba(255, 255, 255, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.45),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-clay-pressed {
+  box-shadow:
+    inset 10px 10px 20px #d9d4e3,
+    inset -10px -10px 20px #ffffff;
+}
+
+/* ---------- Flotabilidad: gravedad cero con resistencia al aire ---------- */
+
+@keyframes clay-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+@keyframes clay-float-delayed {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(-2deg);
+  }
+}
+
+@keyframes clay-float-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(5deg);
+  }
+}
+
+@keyframes clay-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.animate-clay-float {
+  animation: clay-float 8s ease-in-out infinite;
+}
+.animate-clay-float-delayed {
+  animation: clay-float-delayed 10s ease-in-out infinite;
+}
+.animate-clay-float-slow {
+  animation: clay-float-slow 12s ease-in-out infinite;
+}
+.animate-clay-breathe {
+  animation: clay-breathe 6s ease-in-out infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Degradé multi-stop para títulos grandes (nunca bajo text-5xl) */
+.clay-text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--color-clay-foreground) 20%,
+    var(--color-clay-accent) 60%,
+    var(--color-clay-accent-alt)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-clay-float,
+  .animate-clay-float-delayed,
+  .animate-clay-float-slow,
+  .animate-clay-breathe {
+    animation: none;
+  }
 }

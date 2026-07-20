@@ -65,14 +65,16 @@ export function PaymentBrick({
   return (
     <div>
       {!ready && (
-        <p className="py-8 text-center text-sm text-neutral-400">Cargando medios de pago…</p>
+        <p className="py-8 text-center text-sm font-medium text-clay-muted">
+          Cargando medios de pago…
+        </p>
       )}
       {message && (
         <div
           className={
             message.kind === "error"
-              ? "mb-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-              : "mb-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+              ? "mb-3 rounded-[20px] bg-red-50 px-4 py-3 text-sm font-medium text-red-700 shadow-clay-pressed"
+              : "mb-3 rounded-[20px] bg-clay-warning/10 px-4 py-3 text-sm font-medium text-clay-warning shadow-clay-pressed"
           }
         >
           {message.text}
@@ -108,7 +110,10 @@ export function PaymentBrick({
         }}
       />
       <div className="mt-4 text-center">
-        <Link href={cancelUrl} className="text-sm text-neutral-500 underline hover:text-neutral-700">
+        <Link
+          href={cancelUrl}
+          className="text-sm font-medium text-clay-muted underline hover:text-clay-accent"
+        >
           Pagar más tarde
         </Link>
       </div>
