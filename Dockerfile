@@ -17,6 +17,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-cert
     && rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Variables NEXT_PUBLIC_* : Next.js las inlinea en el bundle del cliente en
+# build time, no en runtime — deben llegar como build args desde Coolify.
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_CLINIC_TZ
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_CLINIC_TZ=$NEXT_PUBLIC_CLINIC_TZ
+
 RUN npx prisma generate
 RUN npm run build
 
