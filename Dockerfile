@@ -33,6 +33,11 @@ FROM node:20-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
+# El server.js standalone usa HOSTNAME como dirección de bind. Docker fija
+# HOSTNAME al ID del contenedor por defecto, lo que hace que Next.js escuche
+# solo en esa dirección puntual (inalcanzable desde otros contenedores, ej.
+# el proxy de Coolify). Forzamos 0.0.0.0 para escuchar en todas las interfaces.
+ENV HOSTNAME=0.0.0.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
