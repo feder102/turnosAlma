@@ -56,6 +56,12 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/node_modules ./node_modules
 
+# El cliente generado de Prisma (output custom en src/generated/prisma) ya
+# queda embebido en el bundle de Next.js vía webpack, pero scripts sueltos
+# como prisma/seed.ts lo requieren directamente desde el filesystem — se
+# copia para poder correr `db:seed` dentro del contenedor desplegado.
+COPY --from=builder /app/src/generated ./src/generated
+
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x ./docker-entrypoint.sh && chown -R nextjs:nodejs /app
 
